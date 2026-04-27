@@ -1,0 +1,318 @@
+/* ─── CSS Variables ─── */
+:root {
+  --gold: #c9a227;
+  --gold-light: #f0c84a;
+  --gold-dark: #9a7a10;
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #111118;
+  --bg-card: #16161f;
+  --bg-hover: #1e1e2a;
+  --border: #2a2a3a;
+  --border-gold: rgba(201,162,39,0.3);
+  --text-primary: #ffffff;
+  --text-secondary: #9999aa;
+  --text-muted: #666677;
+  --green: #00d084;
+  --red: #ff4444;
+  --blue: #4488ff;
+  --purple: #9944ff;
+  --header-height: 60px;
+  --sidebar-w: 240px;
+  --sidebar-collapsed: 60px;
+}
+
+/* ─── Reset ─── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  touch-action: pan-y;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; font-family: 'Outfit', sans-serif; border: none; outline: none; }
+input, select, textarea { font-family: 'Outfit', sans-serif; }
+img, canvas, svg { max-width: 100%; display: block; }
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
+
+/* ─── Animations ─── */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 5px rgba(201,162,39,0.3); }
+  50% { box-shadow: 0 0 20px rgba(201,162,39,0.7); }
+}
+
+/* ─── Utility ─── */
+.gold-text {
+  background: linear-gradient(135deg, #c9a227, #f0c84a, #c9a227);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, #c9a227, #f0c84a);
+  color: #0a0a0f;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.4px;
+  transition: all 0.25s;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-gold:hover:not(:disabled) {
+  box-shadow: 0 4px 18px rgba(201,162,39,0.45);
+  transform: translateY(-1px);
+}
+.btn-gold:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-outline {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 9px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.25s;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-outline:hover { background: rgba(201,162,39,0.1); }
+
+.spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-gold { background: rgba(201,162,39,0.18); color: var(--gold); border: 1px solid rgba(201,162,39,0.3); }
+.badge-green { background: rgba(0,208,132,0.18); color: var(--green); border: 1px solid rgba(0,208,132,0.3); }
+.badge-red { background: rgba(255,68,68,0.18); color: var(--red); border: 1px solid rgba(255,68,68,0.3); }
+
+/* ─── App Shell ─── */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+.app-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-height);
+  background: rgba(10,10,15,0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201,162,39,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  z-index: 1000;
+  gap: 8px;
+}
+
+/* Body (below header) */
+.app-body {
+  display: flex;
+  padding-top: var(--header-height);
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Sidebar */
+.app-sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  bottom: 0;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 900;
+  transition: transform 0.28s ease, width 0.28s ease;
+  padding-bottom: 24px;
+}
+
+/* Sidebar overlay (mobile) */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 899;
+  backdrop-filter: blur(2px);
+}
+
+/* Main content */
+.app-main {
+  flex: 1;
+  padding: 22px;
+  min-height: calc(100vh - var(--header-height));
+  overflow-x: hidden;
+  transition: margin-left 0.28s ease;
+}
+
+/* ─── Game Layout (sidebar + bet panel) ─── */
+.game-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 18px;
+  align-items: start;
+}
+
+.game-panel-right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ─── Grids ─── */
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+
+/* ─── Tables ─── */
+.tbl-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tbl-wrap table { min-width: 460px; width: 100%; border-collapse: collapse; }
+
+/* ══════════════════════════════════════════════
+   DESKTOP — sidebar open (≥1024px)
+══════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+  .app-sidebar { width: var(--sidebar-w); transform: translateX(0); }
+  .app-sidebar.collapsed { width: var(--sidebar-collapsed); }
+  .app-main { margin-left: var(--sidebar-w); }
+  .app-main.sidebar-collapsed { margin-left: var(--sidebar-collapsed); }
+  .game-layout { grid-template-columns: 1fr 300px; }
+}
+
+/* ══════════════════════════════════════════════
+   TABLET LANDSCAPE (768px – 1023px)
+══════════════════════════════════════════════ */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .app-sidebar { width: var(--sidebar-collapsed); transform: translateX(0); }
+  .app-sidebar.open { width: var(--sidebar-w); }
+  .app-main { margin-left: var(--sidebar-collapsed); }
+  .app-main.sidebar-open { margin-left: var(--sidebar-w); }
+  .game-layout { grid-template-columns: 1fr 270px; gap: 14px; }
+  .grid-4 { grid-template-columns: repeat(3,1fr); }
+}
+
+/* ══════════════════════════════════════════════
+   MOBILE (< 768px) — KEY FIX
+   Sidebar hides off-screen, slides in when .open
+══════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  :root { --header-height: 54px; }
+
+  /* Sidebar completely off-screen by default */
+  .app-sidebar {
+    width: var(--sidebar-w) !important;
+    transform: translateX(-100%);
+    box-shadow: none;
+  }
+  /* Slide in when open */
+  .app-sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.6);
+  }
+
+  /* Show overlay when sidebar open */
+  .sidebar-overlay.visible { display: block; }
+
+  /* Main content takes full width — NO margin */
+  .app-main {
+    margin-left: 0 !important;
+    padding: 12px;
+    width: 100%;
+  }
+
+  /* Game layout stacks — bet panel FIRST on mobile */
+  .game-layout {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+  /* Mobile: Game area on TOP, bet panel on BOTTOM */
+  .game-layout > *:first-child { order: 1; }
+  .game-panel-right { order: 2; }
+
+  /* Grids */
+  .grid-4, .grid-3 { grid-template-columns: repeat(2,1fr); gap: 8px; }
+  .grid-2 { grid-template-columns: 1fr; }
+
+  /* Typography */
+  h1 { font-size: clamp(18px,5vw,22px) !important; }
+  h2 { font-size: clamp(16px,4vw,18px) !important; }
+}
+
+/* ══════════════════════════════════════════════
+   SMALL MOBILE (< 480px)
+══════════════════════════════════════════════ */
+@media (max-width: 479px) {
+  :root { --header-height: 50px; }
+  .app-main { padding: 10px; }
+  .btn-gold, .btn-outline { padding: 8px 14px; font-size: 12px; }
+  .hide-xs { display: none !important; }
+  .grid-4, .grid-3 { grid-template-columns: repeat(2,1fr); gap: 6px; }
+}
+
+/* ──── iOS Safari fixes ──── */
+@supports (-webkit-touch-callout: none) {
+  /* Prevent input zoom */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+  /* Full height fix */
+  .app-shell { min-height: -webkit-fill-available; }
+}
+
+/* Prevent pull-to-refresh interference */
+html { overscroll-behavior-y: contain; }
+
+/* Touch tap highlight remove */
+button, a { -webkit-tap-highlight-color: transparent; }

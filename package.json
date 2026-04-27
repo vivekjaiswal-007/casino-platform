@@ -1,0 +1,17 @@
+{
+  "name": "royalbet-casino-platform",
+  "version": "1.0.0",
+  "description": "Full-stack online casino platform with 20+ games",
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:admin": "cd admin-panel && npm run dev",
+    "dev:supermaster": "cd supermaster-panel && npm run dev",
+    "dev:master": "cd master-panel && npm run dev",
+    "dev:agent": "cd agent-panel && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:admin\" \"npm run dev:supermaster\" \"npm run dev:master\" \"npm run dev:agent\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
