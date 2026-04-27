@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🎰 RoyalBet Casino Platform
 
 A full-stack production-ready online casino platform with 20+ games, real-time communication, coin wallet system, and an admin panel.
@@ -242,3 +243,7 @@ npm run dev:supermaster  # port 3002
 npm run dev:master       # port 3003
 npm run dev:agent        # port 3004
 ```
+=======
+# casino-platform
+RoyalBet Casino Platform
+>>>>>>> f92a28be5b876faeb8b2cf7698385554bf71c09f
