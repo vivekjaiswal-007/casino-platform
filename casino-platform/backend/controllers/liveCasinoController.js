@@ -17,21 +17,23 @@ function encryptPayload(data, key) {
 }
 
 export const LIVE_GAMES = [
-  { game_uid: '11521', name: '1 Day Dragon Tiger', category: 'table', hot: true, new: false },
-  { game_uid: '11509', name: '10-10 Cricket', category: 'table', hot: true, new: false },
-  { game_uid: '11523', name: '20-20 Teen Patti', category: 'table', hot: true, new: false },
-  { game_uid: '11527', name: '29 Baccarat', category: 'table', hot: false, new: false },
-  { game_uid: '11416', name: '3 Cards Judgement', category: 'table', hot: false, new: false },
-  { game_uid: '11419', name: '32 Cards', category: 'table', hot: false, new: false },
-  { game_uid: '11522', name: '5 Five Cricket', category: 'table', hot: true, new: false },
-  { game_uid: '11516', name: '6 Player Poker', category: 'table', hot: false, new: false },
-  { game_uid: '11499', name: 'AK47 Teen Patti', category: 'table', hot: true, new: false },
-  { game_uid: '11460', name: 'AK47 VR', category: 'table', hot: true, new: true },
-  { game_uid: '11417', name: 'Amar Akbar Anthony', category: 'table', hot: false, new: false },
-  { game_uid: '11471', name: '5D Lottery 1', category: 'lottery', hot: false, new: false },
-  { game_uid: '11468', name: '5D Lottery 10', category: 'lottery', hot: false, new: false },
-  { game_uid: '11470', name: '5D Lottery 3', category: 'lottery', hot: false, new: false },
-  { game_uid: '11469', name: '5D Lottery 5', category: 'lottery', hot: false, new: false },
+  // Table / Cards
+  { game_uid: '11521', name: '1 Day Dragon Tiger',  category: 'table',   hot: true,  new: false },
+  { game_uid: '11509', name: '10-10 Cricket',        category: 'table',   hot: true,  new: false },
+  { game_uid: '11523', name: '20-20 Teen Patti',     category: 'table',   hot: true,  new: false },
+  { game_uid: '11527', name: '29 Baccarat',          category: 'table',   hot: false, new: false },
+  { game_uid: '11416', name: '3 Cards Judgement',    category: 'table',   hot: false, new: false },
+  { game_uid: '11419', name: '32 Cards',             category: 'table',   hot: false, new: false },
+  { game_uid: '11522', name: '5 Five Cricket',       category: 'table',   hot: true,  new: false },
+  { game_uid: '11516', name: '6 Player Poker',       category: 'table',   hot: false, new: false },
+  { game_uid: '11499', name: 'AK47 Teen Patti',      category: 'table',   hot: true,  new: false },
+  { game_uid: '11460', name: 'AK47 VR',              category: 'table',   hot: true,  new: true  },
+  { game_uid: '11417', name: 'Amar Akbar Anthony',   category: 'table',   hot: false, new: false },
+  // Lottery
+  { game_uid: '11471', name: '5D Lottery 1',         category: 'lottery', hot: false, new: false },
+  { game_uid: '11468', name: '5D Lottery 10',        category: 'lottery', hot: false, new: false },
+  { game_uid: '11470', name: '5D Lottery 3',         category: 'lottery', hot: false, new: false },
+  { game_uid: '11469', name: '5D Lottery 5',         category: 'lottery', hot: false, new: false },
 ]
 
 export const getLiveGames = async (req, res) => {
@@ -57,7 +59,7 @@ export const launchGame = async (req, res) => {
     const BACKEND  = process.env.BACKEND_URL  || 'https://casino-platform-8os6.onrender.com'
 
     const payload = {
-      user_id:       String(user._id),
+      user_id:       user.username || String(user._id),
       balance:       Number(user.balance.toFixed(2)),
       game_uid:      String(game_uid),
       token:         TOKEN,
