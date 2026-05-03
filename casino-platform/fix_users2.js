@@ -1,0 +1,6 @@
+const fs = require('fs')
+let c = fs.readFileSync('admin-panel/src/pages/Users.jsx', 'utf8')
+c = c.replace(/\[pagination\.total\]\(http:\/\/pagination\.total\)/g, 'pagination.total')
+c = c.replace(/\[users\.map\]\(http:\/\/users\.map\)/g, 'users.map')
+fs.writeFileSync('admin-panel/src/pages/Users.jsx', c)
+console.log('Done!')
