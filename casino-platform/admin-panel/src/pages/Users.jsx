@@ -8,14 +8,14 @@ export default function Users() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
-  const [pagination, setPagination] = useState({})
+  const [pagination, setPagination] = useState({ total: 0, pages: 0 })
   const [blocking, setBlocking] = useState(null)
 
   const load = useCallback(async () => {
     setLoading(true)
     try {
       const { data } = await api.get('/admin/users', { params: { search, page, limit: 20 } })
-      setUsers(data.users); setPagination(data.pagination)
+      setUsers(data.users || []); setPagination(data.pagination || { total: 0, pages: 0 })
     } catch { toast.error('Failed to load') }
     setLoading(false)
   }, [search, page])
@@ -116,5 +116,4 @@ export default function Users() {
     </div>
   )
 }
- 
-//fix
+//fix pagination
