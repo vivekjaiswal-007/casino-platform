@@ -1,241 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore, api } from '../store/useStore'
+import toast from 'react-hot-toast'
 
-// ─── Category config ────────────────────────────────────────────────────────
-const CATEGORIES = [
-  { id: 'all',     label: 'All Games',  icon: '🎮' },
-  { id: 'slots',   label: 'Slots',      icon: '🎰' },
-  { id: 'table',   label: 'Table',      icon: '🃏' },
-  { id: 'fishing', label: 'Fishing',    icon: '🎣' },
-  { id: 'arcade',  label: 'Arcade',     icon: '🕹️' },
-]
-
-// ─── Fallback emoji per category ────────────────────────────────────────────
-const CATEGORY_EMOJI = {
-  slots:   '🎰',
-  table:   '🃏',
-  fishing: '🎣',
-  arcade:  '🕹️',
-}
-
-// ─── Gradient per category ──────────────────────────────────────────────────
-const CATEGORY_GRAD = {
-  slots:   'linear-gradient(135deg,#1a0a2e,#3d1468)',
-  table:   'linear-gradient(135deg,#0a1e28,#14486e)',
-  fishing: 'linear-gradient(135deg,#071a1a,#0d4a3d)',
-  arcade:  'linear-gradient(135deg,#1a1200,#4a3000)',
-}
-
-// ─── Full-screen game modal ──────────────────────────────────────────────────
-function GameModal({ gameUrl, gameName, onClose }) {
-  return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 9999,
-      background: 'rgba(0,0,0,0.96)',
-      display: 'flex', flexDirection: 'column',
-    }}>
-      {/* Top bar */}
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '10px 16px',
-        background: '#0c0e16',
-        borderBottom: '1px solid rgba(201,162,39,0.2)',
-        flexShrink: 0,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{
-            width: 8, height: 8, borderRadius: '50%',
-            background: '#00d084',
-            boxShadow: '0 0 8px #00d084',
-            animation: 'pulse 1.5s infinite',
-          }}/>
-          <span style={{ fontFamily: 'Cinzel,serif', color: '#c9a227', fontSize: '14px', fontWeight: 700 }}>
-            LIVE
-          </span>
-          <span style={{ color: '#ccc', fontSize: '13px' }}>{gameName}</span>
-        </div>
-        <button
-          onClick={onClose}
-          style={{
-            background: 'rgba(255,68,68,0.15)', border: '1px solid rgba(255,68,68,0.35)',
-            color: '#ff6666', borderRadius: '8px', padding: '6px 14px',
-            cursor: 'pointer', fontSize: '13px', fontWeight: 700,
-          }}
-        >
-          ✕ Exit Game
-        </button>
-      </div>
-
-      {/* Game iframe */}
-      <iframe
-        src={gameUrl}
-        style={{ flex: 1, border: 'none', width: '100%' }}
-        allow="fullscreen; autoplay"
-        allowFullScreen
-        title={gameName}
-      />
-
-      <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}`}</style>
-    </div>
-  )
-}
-
-// ─── Individual Game Card ────────────────────────────────────────────────────
-function LiveGameCard({ game, onPlay, launching }) {
-  const [hovered, setHovered] = useState(false)
-  const isLaunching = launching === game.game_uid
-  const grad = CATEGORY_GRAD[game.category] || CATEGORY_GRAD.slots
-
-  return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        background: 'var(--bg-card)',
-        border: `1px solid ${hovered ? 'rgba(201,162,39,0.4)' : 'rgba(255,255,255,0.06)'}`,
-        borderRadius: '14px',
-        overflow: 'hidden',
-        cursor: 'pointer',
-        transition: 'all 0.25s',
-        transform: hovered ? 'translateY(-4px)' : 'none',
-        boxShadow: hovered ? '0 12px 32px rgba(0,0,0,0.5), 0 0 20px rgba(201,162,39,0.12)' : 'none',
-        position: 'relative',
-      }}
-    >
-      {/* Thumbnail */}
-      <div style={{
-        width: '100%',
-        aspectRatio: '16/10',
-        background: grad,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        {/* Try actual image, fallback to emoji */}
-        {game.image ? (
-          <img
-            src={game.image}
-            alt={game.name}
-            onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
-          />
-        ) : null}
-        <div style={{
-          fontSize: '3rem',
-          display: game.image ? 'none' : 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%', height: '100%',
-        }}>
-          {CATEGORY_EMOJI[game.category]}
-        </div>
-
-        {/* Grid overlay */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.015)1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015)1px,transparent 1px)',
-          backgroundSize: '20px 20px',
-        }}/>
-
-        {/* LIVE badge */}
-        <div style={{
-          position: 'absolute', top: 8, left: 8,
-          background: 'rgba(192,38,58,0.92)',
-          padding: '3px 8px',
-          borderRadius: '5px',
-          fontSize: '9px', fontWeight: 800,
-          letterSpacing: '1.5px',
-          display: 'flex', alignItems: 'center', gap: '4px',
-          color: 'white',
-        }}>
-          <div style={{ width: 5, height: 5, borderRadius: '50%', background: 'white', animation: 'blink 1.2s infinite' }}/>
-          LIVE
-        </div>
-
-        {/* HOT / NEW badges */}
-        {game.hot && (
-          <div style={{
-            position: 'absolute', top: 8, right: 8,
-            background: 'rgba(255,68,68,0.85)',
-            padding: '3px 8px', borderRadius: '5px',
-            fontSize: '9px', fontWeight: 800, color: 'white',
-          }}>🔥 HOT</div>
-        )}
-        {game.new && !game.hot && (
-          <div style={{
-            position: 'absolute', top: 8, right: 8,
-            background: 'rgba(0,208,132,0.85)',
-            padding: '3px 8px', borderRadius: '5px',
-            fontSize: '9px', fontWeight: 800, color: 'white',
-          }}>✨ NEW</div>
-        )}
-
-        {/* Hover play overlay */}
-        {hovered && (
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'rgba(0,0,0,0.6)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            backdropFilter: 'blur(2px)',
-          }}>
-            <button
-              onClick={() => onPlay(game)}
-              disabled={isLaunching}
-              style={{
-                background: 'linear-gradient(135deg,#8a6a1a,#c9a227)',
-                border: 'none',
-                borderRadius: '24px',
-                padding: '11px 26px',
-                color: '#0a0800',
-                fontWeight: 800,
-                fontSize: '13px',
-                cursor: 'pointer',
-                display: 'flex', alignItems: 'center', gap: '8px',
-                boxShadow: '0 4px 20px rgba(201,162,39,0.5)',
-                transform: 'scale(1.0)',
-                transition: 'transform 0.15s',
-              }}
-            >
-              {isLaunching ? (
-                <>
-                  <span style={{ animation: 'spin 0.8s linear infinite', display: 'inline-block' }}>⟳</span>
-                  Loading…
-                </>
-              ) : (
-                <>▶ Play Now</>
-              )}
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Info */}
-      <div style={{ padding: '10px 12px 12px', background: '#1a1f35' }}>
-        <div style={{ fontSize: '13px', fontWeight: 700, color: '#eee', marginBottom: '4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          {game.name}
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontSize: '11px', color: '#666', textTransform: 'capitalize' }}>
-            {game.category}
-          </span>
-          <span style={{ fontSize: '10px', color: '#00d084', fontWeight: 600 }}>
-            Mac88
-          </span>
-        </div>
-      </div>
-
-      <style>{`
-        @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-        @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-      `}</style>
-    </div>
-  )
-}
-
-// ─── Return/redirect landing ─────────────────────────────────────────────────
+// Return page after game exit
 function ReturnPage() {
   const navigate = useNavigate()
   useEffect(() => {
@@ -244,284 +12,245 @@ function ReturnPage() {
   }, [navigate])
   return (
     <div style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
-      <div style={{ fontSize: '3rem' }}>🎰</div>
-      <h2 style={{ fontFamily: 'Cinzel,serif', color: '#c9a227' }}>Game Ended</h2>
-      <p style={{ color: '#888' }}>Returning to Live Casino…</p>
+      <div style={{ fontSize: '48px' }}>🎮</div>
+      <h2 style={{ fontFamily: 'Cinzel,serif', color: 'var(--gold)' }}>Game Over!</h2>
+      <p style={{ color: 'var(--text-secondary)' }}>Returning to Mac88 Live Casino...</p>
     </div>
   )
 }
 
-// ─── Main LiveCasino page ────────────────────────────────────────────────────
-export default function LiveCasino() {
-  const { user, balance, fetchBalance } = useStore()
-  const navigate = useNavigate()
-  const [games, setGames]             = useState([])
-  const [cat, setCat]                 = useState('all')
-  const [search, setSearch]           = useState('')
-  const [loading, setLoading]         = useState(true)
-  const [launching, setLaunching]     = useState(null)   // game_uid being launched
-  const [error, setError]             = useState('')
-  const [activeGame, setActiveGame]   = useState(null)   // { url, name }
-  const [loginPrompt, setLoginPrompt] = useState(false)
+const CAT_COLORS = { table: '#00d084', lottery: '#c9a227', arcade: '#9944ff', slots: '#ff8800', fishing: '#4488ff' }
+const CAT_ICONS  = { table: '🎲', lottery: '🎯', arcade: '🕹️', slots: '🎰', fishing: '🎣' }
+const CAT_LABELS = { table: 'Table Games', lottery: 'Lottery', arcade: 'Arcade', slots: 'Slots', fishing: 'Fishing' }
 
-  // If URL is /live-casino/return, show return page
-  if (window.location.pathname === '/live-casino/return') return <ReturnPage />
+const GAME_EMOJI = {
+  '1 Day Dragon Tiger': '🐉', '10-10 Cricket': '🏏', '20-20 Teen Patti': '♠️',
+  '29 Baccarat': '🎴', '3 Cards Judgement': '🃏', '32 Cards': '🃏',
+  '5 Five Cricket': '🏏', '6 Player Poker': '♣️', 'AK47 Teen Patti': '🔫',
+  'AK47 VR': '🥽', 'Amar Akbar Anthony': '🎭',
+  '5D Lottery 1': '🎯', '5D Lottery 3': '🎯', '5D Lottery 5': '🎯', '5D Lottery 10': '🎯',
+}
 
-  // Load game list
-  useEffect(() => {
-    setLoading(true)
-    api.get(`/live-casino/games${cat !== 'all' ? `?category=${cat}` : ''}`)
-      .then(r => { const g = r.data.games || r.data || []; setGames(Array.isArray(g)?g:[]); setLoading(false) })
-      .catch(err => {
-        console.error(err)
-        setLoading(false)
-        setError('Failed to load games. Please refresh.')
-      })
-  }, [cat])
-
-  const filtered = games.filter(g =>
-    !search || g.name.toLowerCase().includes(search.toLowerCase())
-  )
-
-  const handlePlay = async (game) => {
-    if (!user) { setLoginPrompt(true); return }
-    setError('')
-    setLaunching(game.game_uid)
-
-    try {
-      const gameId = game.game_uid || game.uid || game.id
-      const { data } = await api.post('/live-casino/launch', {
-        game_uid:      game.game_uid,
-        language:      'en',
-        currency_code: 'INR',
-      })
-
-      if (!data.success || !data.gameUrl) {
-        throw new Error(data.message || 'Failed to launch game')
-      }
-
-      // Refresh balance
-      if (fetchBalance) fetchBalance()
-
-      // Open in modal
-      setActiveGame({ url: data.gameUrl, name: game.name })
-    } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Launch failed. Try again.')
-    } finally {
-      setLaunching(null)
-    }
-  }
-
-  const handleCloseGame = () => {
-    setActiveGame(null)
-    if (fetchBalance) fetchBalance()
-  }
+function GameCard({ game, onPlay, launching }) {
+  const color = CAT_COLORS[game.category] || '#c9a227'
+  const emoji = GAME_EMOJI[game.name] || '🎮'
+  const busy  = launching === game.game_uid
 
   return (
-    <>
-      {/* Full-screen game modal */}
-      {activeGame && (
-        <GameModal
-          gameUrl={activeGame.url}
-          gameName={activeGame.name}
-          onClose={handleCloseGame}
-        />
+    <div
+      onClick={() => !busy && onPlay(game)}
+      style={{
+        background: 'var(--bg-card)', border: `1px solid ${color}28`,
+        borderRadius: '14px', overflow: 'hidden', cursor: busy ? 'not-allowed' : 'pointer',
+        transition: 'all 0.2s', position: 'relative', opacity: busy ? 0.8 : 1,
+      }}
+      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.borderColor = color + '60' }}
+      onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.borderColor = color + '28' }}
+    >
+      <div style={{ height: '4px', background: `linear-gradient(90deg,${color},${color}55)` }} />
+      <div style={{ padding: '16px 12px 12px', textAlign: 'center' }}>
+        <div style={{ fontSize: 'clamp(30px,7vw,44px)', marginBottom: '8px' }}>{emoji}</div>
+        <div style={{ fontSize: 'clamp(11px,2.5vw,13px)', fontWeight: '700', color: '#ddd', marginBottom: '8px', lineHeight: 1.3 }}>
+          {game.name}
+        </div>
+        <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', marginBottom: '10px', flexWrap: 'wrap' }}>
+          {game.hot && <span style={{ fontSize: '9px', fontWeight: '800', padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,68,68,0.18)', color: '#ff6666', border: '1px solid rgba(255,68,68,0.25)' }}>🔥 HOT</span>}
+          {game.new && <span style={{ fontSize: '9px', fontWeight: '800', padding: '2px 6px', borderRadius: '4px', background: 'rgba(0,208,132,0.18)', color: '#00d084', border: '1px solid rgba(0,208,132,0.25)' }}>✨ NEW</span>}
+          <span style={{ fontSize: '9px', fontWeight: '700', padding: '2px 6px', borderRadius: '4px', background: color + '18', color, border: `1px solid ${color}30`, textTransform: 'uppercase' }}>Mac88</span>
+        </div>
+        <button
+          onClick={e => { e.stopPropagation(); onPlay(game) }}
+          disabled={busy}
+          style={{
+            width: '100%', padding: '8px', border: 'none', borderRadius: '8px',
+            background: busy ? color + '44' : `linear-gradient(135deg,${color},${color}bb)`,
+            color: busy ? 'rgba(255,255,255,0.5)' : 'white',
+            fontSize: '12px', fontWeight: '800', cursor: busy ? 'not-allowed' : 'pointer',
+          }}>
+          {busy ? '⏳ Loading...' : '▶ PLAY NOW'}
+        </button>
+      </div>
+      {busy && (
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '14px' }}>
+          <div style={{ width: '32px', height: '32px', border: `3px solid ${color}44`, borderTopColor: color, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default function LiveCasino() {
+  const { user, balance } = useStore()
+  const navigate = useNavigate()
+
+  // Return page
+  if (window.location.pathname === '/live-casino/return') return <ReturnPage />
+
+  const [games,    setGames]    = useState([])
+  const [loading,  setLoading]  = useState(true)
+  const [error,    setError]    = useState(null)
+  const [launching,setLaunching]= useState(null)
+  const [cat,      setCat]      = useState('all')
+  const [search,   setSearch]   = useState('')
+  const [modal,    setModal]    = useState(null)
+
+  useEffect(() => {
+    setLoading(true)
+    api.get('/live-casino/games')
+      .then(function(r) {
+        var data = r.data
+        var list = []
+        if (data && Array.isArray(data.games)) list = data.games
+        else if (Array.isArray(data)) list = data
+        setGames(list)
+        setLoading(false)
+      })
+      .catch(function() {
+        setError('Failed to load games. Please refresh.')
+        setLoading(false)
+      })
+  }, [])
+
+  async function playGame(game) {
+    if (!user) { toast.error('Please login to play!'); navigate('/login'); return }
+    if (balance < 1) { toast.error('Insufficient balance!'); return }
+    setLaunching(game.game_uid)
+    try {
+      const resp = await api.post('/live-casino/launch', {
+        game_uid: game.game_uid,
+        language: 'hi',
+        currency_code: 'INR',
+      })
+      const data = resp.data
+      if (data.success && data.gameUrl) {
+        setModal(data.gameUrl)
+        toast.success(game.name + ' launching!')
+      } else {
+        toast.error(data.message || 'Launch failed')
+      }
+    } catch (err) {
+      toast.error(err.response && err.response.data && err.response.data.message ? err.response.data.message : 'Game launch failed')
+    }
+    setLaunching(null)
+  }
+
+  const cats = ['all', 'table', 'lottery']
+  const filtered = games.filter(function(g) {
+    if (cat !== 'all' && g.category !== cat) return false
+    if (search && g.name.toLowerCase().indexOf(search.toLowerCase()) === -1) return false
+    return true
+  })
+
+  return (
+    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Game iframe modal */}
+      {modal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.95)', zIndex: 9999, display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', background: '#0a0a0f' }}>
+            <span style={{ color: 'var(--gold)', fontFamily: 'Cinzel,serif', fontSize: '16px' }}>🎮 Mac88 Live Game</span>
+            <button onClick={() => setModal(null)}
+              style={{ padding: '8px 20px', background: 'rgba(255,68,68,0.15)', border: '1px solid rgba(255,68,68,0.4)', borderRadius: '8px', color: '#ff6666', cursor: 'pointer', fontWeight: '700' }}>
+              ✕ Exit Game
+            </button>
+          </div>
+          <iframe src={modal} style={{ flex: 1, border: 'none' }} allow="autoplay; fullscreen" title="Mac88 Game" />
+        </div>
       )}
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-
-        {/* ── Header ── */}
-        <div style={{
-          background: 'linear-gradient(105deg,#0c0714,#1a103c,#200c1e)',
-          borderRadius: '16px',
-          padding: 'clamp(18px,4vw,28px)',
-          marginBottom: '20px',
-          position: 'relative',
-          overflow: 'hidden',
-          border: '1px solid rgba(201,162,39,0.18)',
-        }}>
-          {/* bg glow */}
-          <div style={{ position: 'absolute', top: -40, right: -40, width: 200, height: 200, borderRadius: '50%', background: 'radial-gradient(circle,rgba(201,162,39,0.08),transparent 70%)', pointerEvents: 'none' }}/>
-
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-                <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#e8304a', boxShadow: '0 0 10px #e8304a', animation: 'livePulse 1.4s infinite' }}/>
-                <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '2px', color: '#e8304a', textTransform: 'uppercase' }}>Live Casino</span>
-              </div>
-              <h1 style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(18px,5vw,26px)', color: '#fff', marginBottom: '4px' }}>
-                🎰 <span style={{ color: '#c9a227' }}>Mac88</span> Live Casino
-              </h1>
-              <p style={{ color: '#888', fontSize: '13px' }}>
-                {games.length} games powered by Mac88 • Real money • Instant launch
-              </p>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-              {user ? (
-                <div style={{
-                  background: 'rgba(201,162,39,0.1)',
-                  border: '1px solid rgba(201,162,39,0.3)',
-                  borderRadius: '10px',
-                  padding: '8px 16px',
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px',
-                }}>
-                  <span style={{ fontSize: '10px', color: '#888', letterSpacing: '1px', textTransform: 'uppercase' }}>Balance</span>
-                  <span style={{ fontFamily: 'Cinzel,serif', fontSize: '18px', fontWeight: 700, color: '#c9a227' }}>
-                    ₹{(balance || 0).toFixed(2)}
-                  </span>
-                </div>
-              ) : (
-                <button
-                  onClick={() => navigate('/login')}
-                  style={{
-                    background: 'linear-gradient(135deg,#c0263a,#e8304a)',
-                    border: 'none',
-                    borderRadius: '10px',
-                    padding: '10px 22px',
-                    color: 'white', fontWeight: 700, fontSize: '13px',
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 16px rgba(192,38,58,0.4)',
-                  }}
-                >
-                  Login to Play →
-                </button>
-              )}
-            </div>
-          </div>
-
-          <style>{`@keyframes livePulse{0%,100%{opacity:1;transform:scale(1);box-shadow:0 0 0 0 rgba(232,48,74,0.5)}50%{opacity:0.7;transform:scale(1.3);box-shadow:0 0 0 6px rgba(232,48,74,0)}}`}</style>
+      {/* Header */}
+      <div style={{ marginBottom: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+          <span style={{ fontSize: '10px', fontWeight: '800', color: '#ff4444', letterSpacing: '2px', padding: '3px 8px', background: 'rgba(255,68,68,0.15)', borderRadius: '4px', border: '1px solid rgba(255,68,68,0.3)', animation: 'livePulse 1.5s ease infinite' }}>● LIVE</span>
+          <h1 style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(18px,4vw,26px)', margin: 0 }}>
+            <span className="gold-text">Mac88 Live Casino</span>
+          </h1>
         </div>
-
-        {/* ── Login prompt banner ── */}
-        {loginPrompt && !user && (
-          <div style={{
-            background: 'rgba(192,38,58,0.12)',
-            border: '1px solid rgba(192,38,58,0.3)',
-            borderRadius: '12px',
-            padding: '14px 18px',
-            marginBottom: '16px',
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px',
-            flexWrap: 'wrap',
-          }}>
-            <span style={{ color: '#ff8899', fontSize: '13px' }}>🔒 You need to login to play live casino games.</span>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={() => navigate('/login')} style={{ background: '#e8304a', border: 'none', color: 'white', borderRadius: '8px', padding: '7px 16px', cursor: 'pointer', fontWeight: 700, fontSize: '12px' }}>Login</button>
-              <button onClick={() => navigate('/signup')} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#ccc', borderRadius: '8px', padding: '7px 16px', cursor: 'pointer', fontSize: '12px' }}>Sign Up</button>
-              <button onClick={() => setLoginPrompt(false)} style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer', fontSize: '16px' }}>✕</button>
-            </div>
-          </div>
-        )}
-
-        {/* ── Error banner ── */}
-        {error && (
-          <div style={{
-            background: 'rgba(255,68,68,0.1)', border: '1px solid rgba(255,68,68,0.25)',
-            borderRadius: '10px', padding: '12px 16px', marginBottom: '14px',
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#ff8888', fontSize: '13px',
-          }}>
-            <span>⚠️ {error}</span>
-            <button onClick={() => setError('')} style={{ background: 'none', border: 'none', color: '#ff8888', cursor: 'pointer', fontSize: '16px' }}>✕</button>
-          </div>
-        )}
-
-        {/* ── Category tabs ── */}
-        <div style={{ display: 'flex', gap: '6px', marginBottom: '14px', overflowX: 'auto', WebkitOverflowScrolling: 'touch', paddingBottom: '4px' }}>
-          {CATEGORIES.map(c => (
-            <button key={c.id} onClick={() => { setCat(c.id); setSearch('') }}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '20px',
-                border: `1px solid ${cat === c.id ? '#c9a227' : 'rgba(255,255,255,0.08)'}`,
-                background: cat === c.id ? 'rgba(201,162,39,0.15)' : 'rgba(255,255,255,0.03)',
-                color: cat === c.id ? '#c9a227' : '#777',
-                fontWeight: cat === c.id ? 700 : 400,
-                fontSize: '12px', cursor: 'pointer', whiteSpace: 'nowrap',
-                transition: 'all 0.2s',
-              }}
-            >
-              {c.icon} {c.label}
-            </button>
-          ))}
-        </div>
-
-        {/* ── Search ── */}
-        <div style={{ position: 'relative', marginBottom: '18px' }}>
-          <input
-            value={search} onChange={e => setSearch(e.target.value)}
-            placeholder="🔍 Search live games…"
-            style={{
-              width: '100%', padding: '10px 16px 10px 40px',
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: '10px', color: 'white', fontSize: '13px', outline: 'none', boxSizing: 'border-box',
-            }}
-            onFocus={e => e.target.style.borderColor = '#c9a227'}
-            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
-          />
-          <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}>🔍</span>
-          {search && <button onClick={() => setSearch('')} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#666', cursor: 'pointer', fontSize: '16px' }}>✕</button>}
-        </div>
-
-        {/* ── Games grid ── */}
-        {loading ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(160px,1fr))', gap: '12px' }}>
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} style={{
-                background: 'rgba(255,255,255,0.03)',
-                borderRadius: '14px',
-                aspectRatio: '4/3',
-                animation: 'shimmer 1.5s infinite',
-                backgroundImage: 'linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0.04) 50%,rgba(255,255,255,0) 100%)',
-                backgroundSize: '200% 100%',
-              }}/>
-            ))}
-          </div>
-        ) : filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '60px 20px', color: '#555' }}>
-            <div style={{ fontSize: '40px', marginBottom: '12px' }}>🎰</div>
-            <p>No games found{search ? ` for "${search}"` : ''}</p>
-          </div>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(160px,1fr))', gap: '12px' }}>
-            {filtered.map(game => (
-              <LiveGameCard
-                key={game.game_uid}
-                game={game}
-                onPlay={handlePlay}
-                launching={launching}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* ── Info strip ── */}
-        <div style={{
-          marginTop: '28px',
-          background: 'rgba(201,162,39,0.05)',
-          border: '1px solid rgba(201,162,39,0.12)',
-          borderRadius: '12px',
-          padding: '16px 20px',
-          display: 'flex', flexWrap: 'wrap', gap: '16px',
-        }}>
-          {[
-            { icon: '🔒', label: 'Secure', desc: 'AES-256 encrypted sessions' },
-            { icon: '⚡', label: 'Instant', desc: 'Games launch in seconds' },
-            { icon: '💰', label: 'Real Money', desc: 'Win real INR coins' },
-            { icon: '📱', label: 'Mobile Ready', desc: 'Play on any device' },
-          ].map(f => (
-            <div key={f.label} style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: '1 0 180px' }}>
-              <span style={{ fontSize: '1.4rem' }}>{f.icon}</span>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: '12px', color: '#c9a227' }}>{f.label}</div>
-                <div style={{ fontSize: '11px', color: '#666' }}>{f.desc}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <style>{`@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}`}</style>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '13px', margin: 0 }}>
+          {games.length} games • Real money • Instant launch
+        </p>
       </div>
-    </>
+
+      {/* Balance banner */}
+      <div style={{ padding: '12px 16px', background: 'linear-gradient(135deg,rgba(201,162,39,0.1),rgba(0,208,132,0.08))', border: '1px solid rgba(201,162,39,0.2)', borderRadius: '10px', marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '24px' }}>🎰</span>
+          <div>
+            <div style={{ fontWeight: '700', color: '#ddd', fontSize: '14px' }}>Mac88 Games — Official</div>
+            <div style={{ color: '#666', fontSize: '12px' }}>Table Games • Lottery • Real Money</div>
+          </div>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ color: 'var(--gold)', fontWeight: '800', fontSize: '15px' }}>🪙 {balance ? balance.toLocaleString() : 0}</div>
+          <div style={{ color: '#555', fontSize: '11px' }}>Your Balance</div>
+        </div>
+      </div>
+
+      {/* Search */}
+      <div style={{ position: 'relative', marginBottom: '12px' }}>
+        <input value={search} onChange={function(e) { setSearch(e.target.value) }}
+          placeholder="🔍 Search Mac88 games..."
+          style={{ width: '100%', padding: '11px 16px 11px 16px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '10px', color: 'white', fontSize: '14px', outline: 'none', boxSizing: 'border-box' }}
+          onFocus={function(e) { e.target.style.borderColor = 'var(--gold)' }}
+          onBlur={function(e) { e.target.style.borderColor = 'var(--border)' }}
+        />
+        {search && <button onClick={function() { setSearch('') }} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#666', cursor: 'pointer', fontSize: '16px' }}>✕</button>}
+      </div>
+
+      {/* Category tabs */}
+      <div style={{ display: 'flex', gap: '6px', marginBottom: '16px', overflowX: 'auto', paddingBottom: '4px' }}>
+        {cats.map(function(c2) {
+          const active = cat === c2
+          const color = c2 === 'all' ? 'var(--gold)' : CAT_COLORS[c2] || 'var(--gold)'
+          const label = c2 === 'all' ? '🎮 All Games' : (CAT_ICONS[c2] || '') + ' ' + (CAT_LABELS[c2] || c2)
+          const count = c2 === 'all' ? games.length : games.filter(function(g) { return g.category === c2 }).length
+          return (
+            <button key={c2} onClick={function() { setCat(c2) }}
+              style={{ padding: '8px 14px', borderRadius: '20px', border: '1px solid ' + (active ? color : 'var(--border)'), background: active ? color + '18' : 'var(--bg-card)', color: active ? color : 'var(--text-secondary)', fontWeight: active ? '700' : '400', fontSize: '12px', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}>
+              {label} ({count})
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Games */}
+      {loading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}>
+          <div style={{ width: '40px', height: '40px', border: '3px solid #2a2a3a', borderTopColor: 'var(--gold)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        </div>
+      ) : error ? (
+        <div style={{ textAlign: 'center', padding: '60px', color: '#ff4444' }}>
+          <div style={{ fontSize: '40px', marginBottom: '12px' }}>⚠️</div>
+          <p>{error}</p>
+          <button onClick={function() { window.location.reload() }} style={{ padding: '10px 20px', background: 'var(--gold)', border: 'none', borderRadius: '8px', color: '#000', fontWeight: '700', cursor: 'pointer', marginTop: '12px' }}>Retry</button>
+        </div>
+      ) : filtered.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>
+          <div style={{ fontSize: '40px', marginBottom: '12px' }}>🔍</div>
+          <p>No games found</p>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(140px,1fr))', gap: '12px' }}>
+          {filtered.map(function(game) {
+            return <GameCard key={game.game_uid} game={game} onPlay={playGame} launching={launching} />
+          })}
+        </div>
+      )}
+
+      {/* Login prompt */}
+      {!user && (
+        <div style={{ marginTop: '24px', padding: '16px', background: 'rgba(201,162,39,0.06)', border: '1px solid rgba(201,162,39,0.15)', borderRadius: '12px', textAlign: 'center' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '10px' }}>Login to play Mac88 live games! 🎰</p>
+          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+            <button onClick={function() { navigate('/login') }} className="btn-gold" style={{ padding: '9px 20px' }}>Login</button>
+            <button onClick={function() { navigate('/signup') }} style={{ padding: '9px 20px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-secondary)', cursor: 'pointer', fontWeight: '600', fontSize: '13px' }}>Sign Up Free</button>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes spin { from { transform: rotate(0) } to { transform: rotate(360deg) } }
+        @keyframes livePulse { 0%,100% { opacity:1 } 50% { opacity:0.5 } }
+      `}</style>
+    </div>
   )
 }
