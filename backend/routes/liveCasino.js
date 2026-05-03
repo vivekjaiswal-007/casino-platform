@@ -1,3 +1,6 @@
+/**
+ * Live Casino Routes — SoftAPI
+ */
 import express from 'express'
 import {
   getLiveGames,
@@ -9,22 +12,16 @@ import { protect } from '../middleware/auth.js'
 
 const router = express.Router()
 
-// TEST
-router.get('/test', (req, res) => {
-  res.json({ message: "Live Casino API Working ✅" })
-})
-
-// GAMES
+// Public — game list (no auth needed to browse)
 router.get('/games', getLiveGames)
 
-// CALLBACK
+// Public — SoftAPI server-to-server callback (no JWT)
 router.post('/callback', gameCallback)
 
-// LAUNCH
+// Protected — launch a game session
 router.post('/launch', protect, launchGame)
 
-// BALANCE
+// Protected — get current balance for live casino header
 router.get('/balance', protect, getLiveBalance)
 
-// 🔥 MOST IMPORTANT
 export default router
