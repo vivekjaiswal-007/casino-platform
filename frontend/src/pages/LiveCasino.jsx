@@ -271,7 +271,7 @@ export default function LiveCasino() {
   useEffect(() => {
     setLoading(true)
     api.get(`/live-casino/games${cat !== 'all' ? `?category=${cat}` : ''}`)
-      .then(r => { setGames(r.data.games || []); setLoading(false) })
+      .then(r => { const g = r.data.games || r.data || []; setGames(Array.isArray(g)?g:[]); setLoading(false) })
       .catch(err => {
         console.error(err)
         setLoading(false)
@@ -289,6 +289,7 @@ export default function LiveCasino() {
     setLaunching(game.game_uid)
 
     try {
+      const gameId = game.game_uid || game.uid || game.id
       const { data } = await api.post('/live-casino/launch', {
         game_uid:      game.game_uid,
         language:      'en',
