@@ -14,6 +14,7 @@ import walletRoutes from './routes/wallet.js'
 import betRoutes from './routes/bets.js'
 import adminRoutes from './routes/admin.js'
 import hierarchyRoutes from './routes/hierarchy.js'
+import liveCasinoRoutes from './routes/liveCasino.js'
 
 dotenv.config()
 
@@ -46,6 +47,7 @@ app.use('/api/wallet', walletRoutes)
 app.use('/api/bets', betRoutes)
 app.use('/api/admin', adminRoutes)
 app.use('/api/hierarchy', hierarchyRoutes)
+app.use('/api/live-casino', liveCasinoRoutes)
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date() }))

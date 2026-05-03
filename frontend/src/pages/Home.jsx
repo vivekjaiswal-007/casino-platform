@@ -150,6 +150,54 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Live Casino Promo Banner */}
+      <section style={{ marginBottom: '36px' }}>
+        <Link to="/live-casino" style={{ textDecoration: 'none', display: 'block' }}>
+          <div style={{
+            background: 'linear-gradient(105deg,#0c0714,#1a103c,#200c1e)',
+            border: '1px solid rgba(201,162,39,0.25)',
+            borderRadius: '16px',
+            padding: 'clamp(18px,4vw,28px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            gap: '16px', flexWrap: 'wrap',
+            position: 'relative', overflow: 'hidden',
+            cursor: 'pointer',
+            transition: 'all 0.25s',
+          }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(201,162,39,0.5)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.4)' }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(201,162,39,0.25)'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none' }}
+          >
+            {/* bg glow */}
+            <div style={{ position: 'absolute', right: -30, top: -30, width: 160, height: 160, borderRadius: '50%', background: 'radial-gradient(circle,rgba(201,162,39,0.07),transparent)', pointerEvents: 'none' }}/>
+            <div style={{ position: 'absolute', left: -20, bottom: -20, width: 120, height: 120, borderRadius: '50%', background: 'radial-gradient(circle,rgba(192,38,58,0.07),transparent)', pointerEvents: 'none' }}/>
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#e8304a', boxShadow: '0 0 8px #e8304a', animation: 'pulse 1.4s infinite' }}/>
+                <span style={{ fontSize: '10px', fontWeight: 700, color: '#e8304a', letterSpacing: '2px', textTransform: 'uppercase' }}>LIVE NOW</span>
+              </div>
+              <h3 style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(16px,4vw,22px)', color: '#fff', marginBottom: '6px' }}>
+                🎰 <span style={{ color: '#c9a227' }}>JILI</span> Live Casino
+              </h3>
+              <p style={{ color: '#888', fontSize: '13px', maxWidth: '380px' }}>
+                Real money games — Slots, Teen Patti, Andar Bahar, Dragon Tiger, Fishing &amp; more. Powered by SoftAPI.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexShrink: 0, position: 'relative', zIndex: 1 }}>
+              <span style={{ fontSize: 'clamp(2rem,8vw,4rem)' }}>🎰</span>
+              <div style={{
+                background: 'linear-gradient(135deg,#8a6a1a,#c9a227)',
+                borderRadius: '10px', padding: '10px 20px',
+                color: '#0a0800', fontWeight: 800, fontSize: '13px',
+                whiteSpace: 'nowrap',
+                boxShadow: '0 4px 16px rgba(201,162,39,0.35)',
+              }}>
+                Play Live →
+              </div>
+            </div>
+          </div>
+        </Link>
+      </section>
+
       {/* All Games */}
       <section>
         <h2 style={{ fontFamily: 'Cinzel, serif', fontSize: '20px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}>

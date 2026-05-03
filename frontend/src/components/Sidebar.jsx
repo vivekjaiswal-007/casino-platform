@@ -120,6 +120,41 @@ export default function Sidebar({ className, sidebarOpen }) {
         </div>
       </Link>
 
+      {/* Live Casino — SoftAPI */}
+      <Link to="/live-casino" style={{ display: 'block', textDecoration: 'none' }}>
+        <div style={{
+          display: 'flex', alignItems: 'center',
+          gap: '10px',
+          padding: showLabels ? '11px 16px' : '11px',
+          justifyContent: showLabels ? 'flex-start' : 'center',
+          margin: '0 6px 4px',
+          borderRadius: '9px',
+          background: location.pathname.startsWith('/live-casino') ? 'rgba(192,38,58,0.14)' : 'transparent',
+          border: location.pathname.startsWith('/live-casino') ? '1px solid rgba(192,38,58,0.35)' : '1px solid transparent',
+          color: location.pathname.startsWith('/live-casino') ? '#e8304a' : 'var(--text-secondary)',
+          transition: 'all 0.2s',
+          textDecoration: 'none',
+        }}>
+          <span style={{ fontSize: '17px', minWidth: '20px', textAlign: 'center', flexShrink: 0 }}>📺</span>
+          {showLabels && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1 }}>
+              <span style={{ fontSize: '13px', fontWeight: '600', whiteSpace: 'nowrap' }}>Live Casino</span>
+              <span style={{
+                fontSize: '9px', fontWeight: 800, padding: '2px 6px',
+                borderRadius: '4px', background: 'rgba(192,38,58,0.25)',
+                color: '#e8304a', border: '1px solid rgba(192,38,58,0.3)',
+                letterSpacing: '0.5px', textTransform: 'uppercase',
+                display: 'flex', alignItems: 'center', gap: '3px',
+              }}>
+                <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#e8304a', display: 'inline-block', animation: 'liveDot 1.4s infinite' }}/>
+                LIVE
+              </span>
+            </div>
+          )}
+        </div>
+      </Link>
+      <style>{`@keyframes liveDot{0%,100%{opacity:1}50%{opacity:0.3}}`}</style>
+
       {/* Categories */}
       {MENU.map(({ cat, icon, items }) => {
         const isOpen = collapsed[cat] !== true // default open

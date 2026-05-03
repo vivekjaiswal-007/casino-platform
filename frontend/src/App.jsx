@@ -28,6 +28,7 @@ import PenaltyShootout from './games/PenaltyShootout'
 import WhatsAppButton from './components/WhatsAppButton'
 import Dashboard from './pages/Dashboard'
 import GameLobby from './pages/GameLobby'
+import LiveCasino from './pages/LiveCasino'
 
 // Games — default imports via re-export wrappers
 import AviatorGame from './games/AviatorGame'
@@ -77,6 +78,8 @@ export default function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="lobby" element={<GameLobby />} />
+        <Route path="live-casino" element={<LiveCasino />} />
+        <Route path="live-casino/return" element={<LiveCasino />} />
         <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="games/aviator" element={<ProtectedRoute><AviatorGame /></ProtectedRoute>} />
         <Route path="games/crash-rocket" element={<ProtectedRoute><CrashRocket /></ProtectedRoute>} />

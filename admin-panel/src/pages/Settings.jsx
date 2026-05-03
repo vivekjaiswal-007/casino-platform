@@ -34,7 +34,7 @@ export default function Settings() {
   const [welcomeBonus, setWelcomeBonus] = useState(1000)
   const [minDeposit, setMinDeposit] = useState(100)
   const [minWithdraw, setMinWithdraw] = useState(100)
-  const [waNumber, setWaNumber] = useState('+971553858340')
+  const [waNumber, setWaNumber] = useState('919594565034')
   const [maintenanceMode, setMaintenanceMode] = useState(false)
 
   // Password
@@ -266,7 +266,7 @@ export default function Settings() {
               </div>
               <div>
                 <label style={labelStyle}>WhatsApp Support Number</label>
-                <input type="text" value={waNumber} onChange={e=>setWaNumber(e.target.value)} placeholder="+971553858340" style={inputStyle}
+                <input type="text" value={waNumber} onChange={e=>setWaNumber(e.target.value)} placeholder="919594565034" style={inputStyle}
                   onFocus={e=>e.target.style.borderColor='#25D366'} onBlur={e=>e.target.style.borderColor='#2a2a3a'} />
                 <p style={{ color:'#555', fontSize:'11px', marginTop:'3px' }}>Format: 91 + 10-digit number (e.g. 919876543210)</p>
               </div>
