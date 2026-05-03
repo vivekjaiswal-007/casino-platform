@@ -24,24 +24,18 @@ export default function LiveCasino() {
   useEffect(() => {
     setLoading(true)
 
-   useEffect(() => {
-  setLoading(true)
+    api.get(`/live-casino/games${cat !== 'all' ? `?category=${cat}` : ''}`)
+      .then((res) => {
+        console.log("🔥 API Response:", res.data)
 
-  fetch("https://casino-platform-8os6.onrender.com/api/live-casino/games")
-    .then(res => res.json())
-    .then(data => {
-      console.log("🔥 Games:", data)
+        // ✅ handle both formats (future safe)
+        const gameList = Array.isArray(res.data)
+          ? res.data
+          : res.data.games || []
 
-      setGames(data)   // ✅ direct array
-      setLoading(false)
-    })
-    .catch(err => {
-      console.error("❌ Error:", err)
-      setError("Failed to load games")
-      setLoading(false)
-    })
-
-}, [cat])
+        setGames(gameList)
+        setLoading(false)
+      })
       .catch((err) => {
         console.error("❌ API Error:", err)
         setError("Failed to load games")
