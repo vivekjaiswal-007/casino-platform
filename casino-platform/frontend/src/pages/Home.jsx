@@ -176,7 +176,7 @@ export default function Home() {
                 <span style={{ fontSize: '10px', fontWeight: 700, color: '#e8304a', letterSpacing: '2px', textTransform: 'uppercase' }}>LIVE NOW</span>
               </div>
               <h3 style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(16px,4vw,22px)', color: '#fff', marginBottom: '6px' }}>
-                🎰 <span style={{ color: '#c9a227' }}>JILI</span> Live Casino
+                🎰 <span style={{ color: '#c9a227' }}>Mac88</span> Live Casino
               </h3>
               <p style={{ color: '#888', fontSize: '13px', maxWidth: '380px' }}>
                 Real money games — Slots, Teen Patti, Andar Bahar, Dragon Tiger, Fishing &amp; more. Powered by SoftAPI.
