@@ -1,22 +1,21 @@
-export const getLiveGames = async (req, res) => {
-  try {
-    console.log("🔥 getLiveGames called")
+import express from 'express'
+import {
+  getLiveGames,
+  launchGame,
+  gameCallback,
+  getLiveBalance,
+} from '../controllers/liveCasinoController.js'
+import { protect } from '../middleware/auth.js'
 
-    return res.json([
-      {
-        id: "1",
-        name: "Live Roulette",
-        category: "table"
-      },
-      {
-        id: "2",
-        name: "Live Blackjack",
-        category: "table"
-      }
-    ])
+const router = express.Router()
 
-  } catch (error) {
-    console.error("❌ getLiveGames error:", error)
-    return res.status(500).json({ error: "Failed to fetch games" })
-  }
-}
+router.get('/test', (req, res) => {
+  res.json({ message: "Live Casino API Working ✅" })
+})
+
+router.get('/games', getLiveGames)
+router.post('/callback', gameCallback)
+router.post('/launch', protect, launchGame)
+router.get('/balance', protect, getLiveBalance)
+
+export default router
