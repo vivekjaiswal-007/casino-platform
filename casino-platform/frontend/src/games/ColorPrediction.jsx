@@ -58,7 +58,6 @@ export default function ColorPrediction() {
   const [picked, setPicked] = useState(null)
   const [result, setResult] = useState(null)
   const [history, setHistory] = useState([])
-  const cdRef = useRef(null)
 
   useEffect(() => {
     let raf
