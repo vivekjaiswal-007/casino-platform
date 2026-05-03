@@ -58,10 +58,6 @@ export default function ColorPrediction() {
   const [picked, setPicked] = useState(null)
   const [result, setResult] = useState(null)
   const [history, setHistory] = useState([])
-  const [countdown, setCountdown] = useState(10)
-  const cdRef = useRef(null)
-
-  useEffect(() => {
     let raf
     const draw = () => {
       const canvas = canvasRef.current
