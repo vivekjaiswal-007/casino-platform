@@ -222,7 +222,7 @@ function LiveGameCard({ game, onPlay, launching }) {
             {game.category}
           </span>
           <span style={{ fontSize: '10px', color: '#00d084', fontWeight: 600 }}>
-            JILI
+            Mac88
           </span>
         </div>
       </div>
@@ -350,10 +350,10 @@ export default function LiveCasino() {
                 <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '2px', color: '#e8304a', textTransform: 'uppercase' }}>Live Casino</span>
               </div>
               <h1 style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(18px,5vw,26px)', color: '#fff', marginBottom: '4px' }}>
-                🎰 <span style={{ color: '#c9a227' }}>JILI</span> Live Casino
+                🎰 <span style={{ color: '#c9a227' }}>Mac88</span> Live Casino
               </h1>
               <p style={{ color: '#888', fontSize: '13px' }}>
-                {games.length} games powered by SoftAPI • Real money • Instant launch
+                {games.length} games powered by Mac88 • Real money • Instant launch
               </p>
             </div>
 
