@@ -26,34 +26,21 @@ function encryptPayload(data, key) {
 // These come from the SoftAPI/JILI game library.
 // Update game_uid values with the actual codes from the Google Drive folder.
 export const LIVE_GAMES = [
-  // ── Slots ──
-  { game_uid: '7916',  name: 'Fortune Gems',       category: 'slots',    image: 'https://i.imgur.com/Z5Yv8kA.png',   hot: true,  new: false },
-  { game_uid: '7917',  name: 'Super Ace',           category: 'slots',    image: 'https://i.imgur.com/mQf3n9P.png',   hot: true,  new: false },
-  { game_uid: '7918',  name: 'Crazy 777',           category: 'slots',    image: 'https://i.imgur.com/K4xJlLc.png',   hot: false, new: false },
-  { game_uid: '7919',  name: 'Money Coming',        category: 'slots',    image: 'https://i.imgur.com/Tg6bQvR.png',   hot: false, new: true  },
-  { game_uid: '7920',  name: 'Alibaba',             category: 'slots',    image: 'https://i.imgur.com/L2mPc8A.png',   hot: false, new: false },
-  { game_uid: '7921',  name: 'Jungle King',         category: 'slots',    image: 'https://i.imgur.com/9hXkW4Z.png',   hot: false, new: false },
-  { game_uid: '7922',  name: 'Lucky Coming',        category: 'slots',    image: 'https://i.imgur.com/RNqpLaE.png',   hot: false, new: true  },
-  { game_uid: '7923',  name: 'Ocean King 3+',       category: 'slots',    image: 'https://i.imgur.com/BJLwKhQ.png',   hot: true,  new: false },
-
-  // ── Table / Cards ──
-  { game_uid: '7924',  name: 'Baccarat',            category: 'table',    image: 'https://i.imgur.com/UxCvAjN.png',   hot: true,  new: false },
-  { game_uid: '7925',  name: 'Dragon Tiger',        category: 'table',    image: 'https://i.imgur.com/1KbPQyR.png',   hot: true,  new: false },
-  { game_uid: '7926',  name: 'Teen Patti',          category: 'table',    image: 'https://i.imgur.com/XGf7Qp2.png',   hot: true,  new: false },
-  { game_uid: '7927',  name: 'Andar Bahar',         category: 'table',    image: 'https://i.imgur.com/n7VWrJb.png',   hot: true,  new: false },
-  { game_uid: '7928',  name: 'Rummy',               category: 'table',    image: 'https://i.imgur.com/Ac8kFgH.png',   hot: false, new: false },
-  { game_uid: '7929',  name: 'Blackjack',           category: 'table',    image: 'https://i.imgur.com/5TpIaLQ.png',   hot: false, new: false },
-
-  // ── Fishing ──
-  { game_uid: '7930',  name: 'Dinosaur Tycoon',     category: 'fishing',  image: 'https://i.imgur.com/VaqnWuM.png',   hot: true,  new: false },
-  { game_uid: '7931',  name: 'Royal Fishing',       category: 'fishing',  image: 'https://i.imgur.com/EQi3p6X.png',   hot: false, new: false },
-  { game_uid: '7932',  name: 'Jackpot Fishing',     category: 'fishing',  image: 'https://i.imgur.com/7qfSvCk.png',   hot: false, new: true  },
-  { game_uid: '7933',  name: 'Mega Fishing',        category: 'fishing',  image: 'https://i.imgur.com/PqBkRLw.png',   hot: true,  new: false },
-
-  // ── Arcade ──
-  { game_uid: '7934',  name: 'Mines Gold',          category: 'arcade',   image: 'https://i.imgur.com/CXrBqG4.png',   hot: false, new: true  },
-  { game_uid: '7935',  name: 'Color Game',          category: 'arcade',   image: 'https://i.imgur.com/zJI3V0T.png',   hot: true,  new: false },
-  { game_uid: '7936',  name: 'Plinko',              category: 'arcade',   image: 'https://i.imgur.com/Mc8WbLo.png',   hot: false, new: true  },
+  { game_uid: '11521', name: '1 Day Dragon Tiger', category: 'table', hot: true, new: false },
+  { game_uid: '11509', name: '10-10 Cricket', category: 'table', hot: true, new: false },
+  { game_uid: '11523', name: '20-20 Teen Patti', category: 'table', hot: true, new: false },
+  { game_uid: '11527', name: '29 Baccarat', category: 'table', hot: false, new: false },
+  { game_uid: '11416', name: '3 Cards Judgement', category: 'table', hot: false, new: false },
+  { game_uid: '11419', name: '32 Cards', category: 'table', hot: false, new: false },
+  { game_uid: '11522', name: '5 Five Cricket', category: 'table', hot: true, new: false },
+  { game_uid: '11516', name: '6 Player Poker', category: 'table', hot: false, new: false },
+  { game_uid: '11499', name: 'AK47 Teen Patti', category: 'table', hot: true, new: false },
+  { game_uid: '11417', name: 'Amar Akbar Anthony', category: 'table', hot: false, new: false },
+  { game_uid: '11471', name: '5D Lottery 1', category: 'lottery', hot: false, new: false },
+  { game_uid: '11468', name: '5D Lottery 10', category: 'lottery', hot: false, new: false },
+  { game_uid: '11470', name: '5D Lottery 3', category: 'lottery', hot: false, new: false },
+  { game_uid: '11469', name: '5D Lottery 5', category: 'lottery', hot: false, new: false },
+  { game_uid: '11460', name: 'AK47 VR', category: 'arcade', hot: true, new: true },
 ]
 
 // ─── GET /api/live-casino/games ────────────────────────────────────────────
