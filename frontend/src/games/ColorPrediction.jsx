@@ -166,10 +166,8 @@ export default function ColorPrediction() {
 
       raf = requestAnimationFrame(draw)
     }
-    raf = requestAnimationFrame(draw)
     return () => cancelAnimationFrame(raf)
-  })
-}, [setBalance])
+  }, [setBalance])
 
   // Countdown timer
   useEffect(() => {
