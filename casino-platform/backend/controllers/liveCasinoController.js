@@ -59,7 +59,7 @@ export const launchGame = async (req, res) => {
     const BACKEND  = process.env.BACKEND_URL  || 'https://casino-platform-8os6.onrender.com'
 
     const payload = {
-      user_id:       user.username || String(user._id),
+      user_id:       String(user._id).replace(/[^0-9]/g, '').slice(0, 10) || '1001',
       balance:       Number(user.balance.toFixed(2)),
       game_uid:      String(game_uid),
       token:         TOKEN,
