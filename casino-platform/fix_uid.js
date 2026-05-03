@@ -1,0 +1,8 @@
+const fs = require('fs')
+let c = fs.readFileSync('backend/controllers/liveCasinoController.js', 'utf8')
+const start = c.indexOf('export const LIVE_GAMES')
+const end = c.indexOf(']', start) + 1
+const newGames = "export const LIVE_GAMES = [\n  { game_uid: '11521', name: '1 Day Dragon Tiger', category: 'table', hot: true, new: false },\n  { game_uid: '11509', name: '10-10 Cricket', category: 'table', hot: true, new: false },\n  { game_uid: '11523', name: '20-20 Teen Patti', category: 'table', hot: true, new: false },\n  { game_uid: '11527', name: '29 Baccarat', category: 'table', hot: false, new: false },\n  { game_uid: '11416', name: '3 Cards Judgement', category: 'table', hot: false, new: false },\n  { game_uid: '11419', name: '32 Cards', category: 'table', hot: false, new: false },\n  { game_uid: '11522', name: '5 Five Cricket', category: 'table', hot: true, new: false },\n  { game_uid: '11516', name: '6 Player Poker', category: 'table', hot: false, new: false },\n  { game_uid: '11499', name: 'AK47 Teen Patti', category: 'table', hot: true, new: false },\n  { game_uid: '11460', name: 'AK47 VR', category: 'table', hot: true, new: true },\n  { game_uid: '11417', name: 'Amar Akbar Anthony', category: 'table', hot: false, new: false },\n  { game_uid: '11471', name: '5D Lottery 1', category: 'lottery', hot: false, new: false },\n  { game_uid: '11468', name: '5D Lottery 10', category: 'lottery', hot: false, new: false },\n  { game_uid: '11470', name: '5D Lottery 3', category: 'lottery', hot: false, new: false },\n  { game_uid: '11469', name: '5D Lottery 5', category: 'lottery', hot: false, new: false },\n]"
+c = c.slice(0, start) + newGames + c.slice(end)
+fs.writeFileSync('backend/controllers/liveCasinoController.js', c)
+console.log('Done!')
