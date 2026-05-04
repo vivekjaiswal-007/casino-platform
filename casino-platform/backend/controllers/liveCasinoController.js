@@ -137,9 +137,9 @@ export const gameCallback = async (req, res) => {
 
     const balanceBefore = user.balance
 
-    // Only update balance for actual transactions
-    if (net !== 0) {
-      user.balance = Math.max(0, user.balance + net)
+    // Only credit wins - never deduct via callback
+    if (win > bet) {
+      user.balance = Math.max(0, user.balance + (win - bet))
       await user.save()
 
       await Bet.create({
