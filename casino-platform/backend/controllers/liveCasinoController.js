@@ -59,8 +59,8 @@ export const launchGame = async (req, res) => {
     const BACKEND  = process.env.BACKEND_URL  || 'https://casino-platform-8os6.onrender.com'
 
     const payload = {
-      user_id:       user.username || String(user._id),
-      balance:       Math.floor(user.balance || 0),
+      user_id: String(parseInt(String(user._id).slice(-6), 16) % 900000 + 100000),
+      balance:       Number(user.balance.toFixed(2)),
       game_uid:      String(game_uid),
       token:         TOKEN,
       timestamp:     Date.now(),
@@ -133,3 +133,5 @@ export const getLiveBalance = async (req, res) => {
     res.status(500).json({ success: false, message: err.message })
   }
 }
+//uid-fix
+//uid-fix
