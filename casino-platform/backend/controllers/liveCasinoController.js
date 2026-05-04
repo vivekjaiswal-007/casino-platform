@@ -17,7 +17,6 @@ function encryptPayload(data, key) {
 }
 
 export const LIVE_GAMES = [
-  // Table / Cards
   { game_uid: '11521', name: '1 Day Dragon Tiger',  category: 'table',   hot: true,  new: false },
   { game_uid: '11509', name: '10-10 Cricket',        category: 'table',   hot: true,  new: false },
   { game_uid: '11523', name: '20-20 Teen Patti',     category: 'table',   hot: true,  new: false },
@@ -29,7 +28,6 @@ export const LIVE_GAMES = [
   { game_uid: '11499', name: 'AK47 Teen Patti',      category: 'table',   hot: true,  new: false },
   { game_uid: '11460', name: 'AK47 VR',              category: 'table',   hot: true,  new: true  },
   { game_uid: '11417', name: 'Amar Akbar Anthony',   category: 'table',   hot: false, new: false },
-  // Lottery
   { game_uid: '11471', name: '5D Lottery 1',         category: 'lottery', hot: false, new: false },
   { game_uid: '11468', name: '5D Lottery 10',        category: 'lottery', hot: false, new: false },
   { game_uid: '11470', name: '5D Lottery 3',         category: 'lottery', hot: false, new: false },
@@ -55,12 +53,24 @@ export const launchGame = async (req, res) => {
     if (!user)          return res.status(404).json({ success: false, message: 'User not found' })
     if (user.isBlocked) return res.status(403).json({ success: false, message: 'Account blocked' })
 
+    // FIX 1: Balance check - minimum ₹1 required
+    if (user.balance < 1) {
+      return res.status(400).json({ success: false, message: 'Insufficient balance. Minimum ₹1 required.' })
+    }
+
+    // FIX 2: Generate softagiId if not exists and save to DB
+    if (!user.softagiId) {
+      user.softagiId = Math.floor(100000 + Math.random() * 900000)
+      await user.save()
+      console.log(`Generated softagiId=${user.softagiId} for user=${user.username}`)
+    }
+
     const FRONTEND = process.env.FRONTEND_URL || 'https://casino-platform-1.onrender.com'
     const BACKEND  = process.env.BACKEND_URL  || 'https://casino-platform-8os6.onrender.com'
 
     const payload = {
-      user_id: String(parseInt(String(user._id).slice(-6), 16) % 900000 + 100000),
-      balance:       parseFloat(user.balance.toFixed(2)) || 0,
+      user_id:       String(user.softagiId),
+      balance:       Math.min(parseFloat(user.balance.toFixed(2)), 500),
       game_uid:      String(game_uid),
       token:         TOKEN,
       timestamp:     Date.now(),
@@ -82,7 +92,7 @@ export const launchGame = async (req, res) => {
       return res.status(400).json({ success: false, message: apiData.msg || 'Launch failed', code: apiData.code })
     }
 
-    console.log(`Game launched: user=${user.username} game=${game_uid}`)
+    console.log(`Game launched: user=${user.username} softagiId=${user.softagiId} game=${game_uid} balance=${payload.balance}`)
     res.json({ success: true, gameUrl: apiData.data?.url, game_uid, balance: user.balance })
   } catch (err) {
     console.error('launchGame error:', err.message)
@@ -97,39 +107,55 @@ export const gameCallback = async (req, res) => {
     if (!member_account || bet_amount === undefined || win_amount === undefined) {
       return res.json({ credit_amount: -1, error: 'Missing fields' })
     }
-    const bet  = parseFloat(bet_amount) || 0
-    const win  = parseFloat(win_amount) || 0
-    const net  = win - bet
-    // member_account = softagiId (numeric) we sent during launch
+
+    const bet = parseFloat(bet_amount) || 0
+    const win = parseFloat(win_amount) || 0
+    const net = win - bet
+
+    // FIX 2: Find user by softagiId
     let user = await User.findOne({ softagiId: Number(member_account) })
     if (!user) {
-      // fallback: try MongoDB _id
       user = await User.findById(member_account).catch(() => null)
     }
     if (!user) {
       console.error('Callback: user not found for member_account:', member_account)
       return res.json({ credit_amount: 0, timestamp: Date.now() })
     }
+
+    // FIX 3: Skip duplicate round processing
+    const existingBet = await Bet.findOne({ 'result.game_round': game_round })
+    if (existingBet) {
+      console.log('Duplicate round skipped:', game_round)
+      const credit = parseFloat(Math.max(0, bet - win).toFixed(2))
+      return res.json({ credit_amount: credit, timestamp: Date.now() })
+    }
+
     const balanceBefore = user.balance
     user.balance = Math.max(0, user.balance + net)
     await user.save()
+
     await Bet.create({
-      userId: user._id, game: `live_${game_uid}`,
+      userId: user._id,
+      // FIX 4: "Live Game" instead of "Mac88"
+      game: `Live Game ${game_uid}`,
       betAmount: bet, payout: win, profit: net,
       status: win >= bet ? 'won' : 'lost',
       result: { game_uid, game_round }, settledAt: new Date(),
     })
+
     if (net !== 0) {
       await WalletTransaction.create({
         userId: user._id, type: net > 0 ? 'game_win' : 'game_bet',
         amount: Math.abs(net), balanceBefore, balanceAfter: user.balance,
-        description: `Mac88 Game ${game_uid}`,
+        description: `Live Game ${game_uid}`,
       })
     }
+
     const credit = parseFloat(Math.max(0, bet - win).toFixed(2))
-    console.log('Callback success: member=' + member_account + ' bet=' + bet + ' win=' + win + ' credit=' + credit + ' newBalance=' + user.balance)
+    console.log(`Callback OK: member=${member_account} bet=${bet} win=${win} credit=${credit} newBalance=${user.balance}`)
     res.json({ credit_amount: credit, timestamp: Date.now() })
   } catch (err) {
+    console.error('Callback error:', err.message)
     res.json({ credit_amount: -1, error: err.message })
   }
 }
@@ -143,4 +169,4 @@ export const getLiveBalance = async (req, res) => {
     res.status(500).json({ success: false, message: err.message })
   }
 }
-//v49
+//v50
