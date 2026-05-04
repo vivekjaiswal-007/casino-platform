@@ -2,6 +2,11 @@ import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
 
 const userSchema = new mongoose.Schema({
+  softagiId: {
+    type: Number,
+    unique: true,
+    sparse: true,
+  },
   username: {
     type: String, required: true, unique: true, trim: true,
     minlength: 3, maxlength: 20,

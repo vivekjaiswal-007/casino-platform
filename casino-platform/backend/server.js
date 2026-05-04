@@ -49,6 +49,17 @@ app.use('/api/admin', adminRoutes)
 app.use('/api/hierarchy', hierarchyRoutes)
 app.use('/api/live-casino', liveCasinoRoutes)
 
+// Check outbound IP
+app.get('/api/myip', async (req, res) => {
+  try {
+    const r = await fetch('https://api.ipify.org?format=json')
+    const data = await r.json()
+    res.json({ outbound_ip: data.ip })
+  } catch(e) {
+    res.json({ error: e.message })
+  }
+})
+
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date() }))
 
