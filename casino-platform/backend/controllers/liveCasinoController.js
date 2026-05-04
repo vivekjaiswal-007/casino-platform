@@ -59,7 +59,7 @@ export const launchGame = async (req, res) => {
     const BACKEND  = process.env.BACKEND_URL  || 'https://casino-platform-8os6.onrender.com'
 
     const payload = {
-      user_id: String(user._id),
+      user_id: String(parseInt(String(user._id).slice(-6), 16) % 900000 + 100000),
       balance:       parseFloat(user.balance.toFixed(2)) || 0,
       game_uid:      String(game_uid),
       token:         TOKEN,
@@ -101,7 +101,14 @@ export const gameCallback = async (req, res) => {
     const win  = parseFloat(win_amount) || 0
     const net  = win - bet
     // member_account is the user_id (MongoDB _id string) sent during launch
-    let user = await User.findById(member_account).catch(() => null)
+    // member_account = softapi numeric id we sent
+    // Find user by matching the same formula
+    const allUsers = await User.find({}).select('_id balance totalBets totalWon totalLost')
+    let user = null
+    for (const u of allUsers) {
+      const uid = String(parseInt(String(u._id).slice(-6), 16) % 900000 + 100000)
+      if (uid === String(member_account)) { user = u; break }
+    }
     if (!user) return res.json({ credit_amount: -1, error: 'User not found: ' + member_account })
     const balanceBefore = user.balance
     user.balance = Math.max(0, user.balance + net)
@@ -134,4 +141,4 @@ export const getLiveBalance = async (req, res) => {
     res.status(500).json({ success: false, message: err.message })
   }
 }
-//v45
+//v46
