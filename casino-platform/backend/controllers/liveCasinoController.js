@@ -60,7 +60,7 @@ export const launchGame = async (req, res) => {
 
     const payload = {
       user_id: String(parseInt(String(user._id).slice(-6), 16) % 900000 + 100000),
-      balance:       Math.min(parseFloat(user.balance.toFixed(2)) || 0, 500),
+      balance:       parseFloat(user.balance.toFixed(2)) || 0,
       game_uid:      String(game_uid),
       token:         TOKEN,
       timestamp:     Date.now(),
@@ -100,16 +100,16 @@ export const gameCallback = async (req, res) => {
     const bet  = parseFloat(bet_amount) || 0
     const win  = parseFloat(win_amount) || 0
     const net  = win - bet
-    // member_account is the user_id (MongoDB _id string) sent during launch
-    // member_account = softapi numeric id we sent
-    // Find user by matching the same formula
-    const allUsers = await User.find({}).select('_id balance totalBets totalWon totalLost')
-    let user = null
-    for (const u of allUsers) {
-      const uid = String(parseInt(String(u._id).slice(-6), 16) % 900000 + 100000)
-      if (uid === String(member_account)) { user = u; break }
+    // member_account = softagiId (numeric) we sent during launch
+    let user = await User.findOne({ softagiId: Number(member_account) })
+    if (!user) {
+      // fallback: try MongoDB _id
+      user = await User.findById(member_account).catch(() => null)
     }
-    if (!user) return res.json({ credit_amount: -1, error: 'User not found: ' + member_account })
+    if (!user) {
+      console.error('Callback: user not found for member_account:', member_account)
+      return res.json({ credit_amount: 0, timestamp: Date.now() })
+    }
     const balanceBefore = user.balance
     user.balance = Math.max(0, user.balance + net)
     await user.save()
@@ -126,7 +126,9 @@ export const gameCallback = async (req, res) => {
         description: `Mac88 Game ${game_uid}`,
       })
     }
-    res.json({ credit_amount: parseFloat(Math.max(0, bet - win).toFixed(2)), timestamp: Date.now() })
+    const credit = parseFloat(Math.max(0, bet - win).toFixed(2))
+    console.log('Callback success: member=' + member_account + ' bet=' + bet + ' win=' + win + ' credit=' + credit + ' newBalance=' + user.balance)
+    res.json({ credit_amount: credit, timestamp: Date.now() })
   } catch (err) {
     res.json({ credit_amount: -1, error: err.message })
   }
@@ -141,3 +143,4 @@ export const getLiveBalance = async (req, res) => {
     res.status(500).json({ success: false, message: err.message })
   }
 }
+//v49
