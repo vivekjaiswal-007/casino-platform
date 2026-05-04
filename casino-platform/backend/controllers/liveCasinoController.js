@@ -60,7 +60,7 @@ export const launchGame = async (req, res) => {
 
     const payload = {
       user_id: String(parseInt(String(user._id).slice(-6), 16) % 900000 + 100000),
-      balance:       parseFloat(user.balance.toFixed(2)) || 0,
+      balance:       Math.min(parseFloat(user.balance.toFixed(2)) || 0, 500),
       game_uid:      String(game_uid),
       token:         TOKEN,
       timestamp:     Date.now(),
