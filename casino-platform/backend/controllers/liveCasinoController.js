@@ -112,6 +112,11 @@ export const gameCallback = async (req, res) => {
     const win = parseFloat(win_amount) || 0
     const net = win - bet
 
+    // Skip if no actual transaction
+    if (bet === 0 && win === 0) {
+      return res.json({ credit_amount: 0, timestamp: Date.now() })
+    }
+
     // FIX 2: Find user by softagiId
     let user = await User.findOne({ softagiId: Number(member_account) })
     if (!user) {
@@ -136,9 +141,8 @@ export const gameCallback = async (req, res) => {
 
     await Bet.create({
       userId: user._id,
-      // FIX 4: "Live Game" instead of "Mac88"
       game: `Live Game ${game_uid}`,
-      betAmount: bet, payout: win, profit: net,
+      betAmount: Math.max(1, bet), payout: win, profit: net,
       status: win >= bet ? 'won' : 'lost',
       result: { game_uid, game_round }, settledAt: new Date(),
     })
@@ -169,3 +173,4 @@ export const getLiveBalance = async (req, res) => {
     res.status(500).json({ success: false, message: err.message })
   }
 }
+//v53

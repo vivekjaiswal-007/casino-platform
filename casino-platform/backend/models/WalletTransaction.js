@@ -41,4 +41,3 @@ walletTransactionSchema.index({ userId: 1, createdAt: -1 })
 walletTransactionSchema.index({ type: 1, withdrawStatus: 1 })
 
 export default mongoose.model('WalletTransaction', walletTransactionSchema)
-//v52
