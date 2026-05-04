@@ -11,6 +11,7 @@ const walletTransactionSchema = new mongoose.Schema({
     type: String,
     enum: [
       'credit', 'debit', 'bet', 'win',
+      'game_bet', 'game_win',
       'admin_add', 'admin_remove', 'admin_reset',
       'bonus', 'deposit', 'withdraw',
       'withdraw_pending', 'withdraw_approved', 'withdraw_rejected'
@@ -40,3 +41,4 @@ walletTransactionSchema.index({ userId: 1, createdAt: -1 })
 walletTransactionSchema.index({ type: 1, withdrawStatus: 1 })
 
 export default mongoose.model('WalletTransaction', walletTransactionSchema)
+//v52

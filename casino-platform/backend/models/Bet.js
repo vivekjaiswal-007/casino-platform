@@ -64,4 +64,3 @@ betSchema.index({ game: 1, createdAt: -1 })
 betSchema.index({ status: 1 })
 
 export default mongoose.model('Bet', betSchema)
-//v51
