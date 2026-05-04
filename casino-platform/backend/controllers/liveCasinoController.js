@@ -70,7 +70,7 @@ export const launchGame = async (req, res) => {
 
     const payload = {
       user_id:       String(user.softagiId),
-      balance:       Math.min(parseFloat(user.balance.toFixed(2)), 500),
+      balance:       parseFloat(user.balance.toFixed(2)),
       game_uid:      String(game_uid),
       token:         TOKEN,
       timestamp:     Date.now(),
@@ -173,4 +173,4 @@ export const getLiveBalance = async (req, res) => {
     res.status(500).json({ success: false, message: err.message })
   }
 }
-//v53
+//v54
