@@ -136,18 +136,20 @@ export const gameCallback = async (req, res) => {
     }
 
     const balanceBefore = user.balance
-    user.balance = Math.max(0, user.balance + net)
-    await user.save()
 
-    await Bet.create({
-      userId: user._id,
-      game: `Live Game ${game_uid}`,
-      betAmount: Math.max(1, bet), payout: win, profit: net,
-      status: win >= bet ? 'won' : 'lost',
-      result: { game_uid, game_round }, settledAt: new Date(),
-    })
-
+    // Only update balance for actual transactions
     if (net !== 0) {
+      user.balance = Math.max(0, user.balance + net)
+      await user.save()
+
+      await Bet.create({
+        userId: user._id,
+        game: `Live Game ${game_uid}`,
+        betAmount: Math.max(1, bet), payout: win, profit: net,
+        status: win >= bet ? 'won' : 'lost',
+        result: { game_uid, game_round }, settledAt: new Date(),
+      })
+
       await WalletTransaction.create({
         userId: user._id, type: net > 0 ? 'game_win' : 'game_bet',
         amount: Math.abs(net), balanceBefore, balanceAfter: user.balance,
@@ -156,7 +158,7 @@ export const gameCallback = async (req, res) => {
     }
 
     const credit = parseFloat(Math.max(0, bet - win).toFixed(2))
-    console.log(`Callback OK: member=${member_account} bet=${bet} win=${win} credit=${credit} newBalance=${user.balance}`)
+    console.log(`Callback OK: member=${member_account} bet=${bet} win=${win} net=${net} credit=${credit} balance=${user.balance}`)
     res.json({ credit_amount: credit, timestamp: Date.now() })
   } catch (err) {
     console.error('Callback error:', err.message)
@@ -173,4 +175,4 @@ export const getLiveBalance = async (req, res) => {
     res.status(500).json({ success: false, message: err.message })
   }
 }
-//v54
+//v55
