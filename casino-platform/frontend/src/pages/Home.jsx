@@ -104,19 +104,6 @@ const SECTIONS = [
       { name: 'Tower',        path: '/games/tower',     icon: '🗼', color: '#9944ff' },
     ],
   },
-  {
-    id: 'casino-lobby',
-    tag: '🏛️ Casino Lobby',
-    tagColor: '#9944ff',
-    games: [
-      { name: 'Poker',      path: '/games/poker',        icon: '♣️', color: '#9944ff' },
-      { name: 'Baccarat',   path: '/games/baccarat',     icon: '🎴', color: '#4488ff' },
-      { name: 'Blackjack',  path: '/games/blackjack',    icon: '🃏', color: '#4488ff' },
-      { name: 'Sic Bo',     path: '/games/sic-bo',       icon: '🎲', color: '#ff9900' },
-      { name: 'Roulette',   path: '/games/roulette',     icon: '🎡', color: '#00d084' },
-      { name: 'Hi-Lo',      path: '/games/hi-lo',        icon: '📈', color: '#00d084' },
-    ],
-  },
 ]
 
 // ── Featured Card (16:9, 3 per row) ─────────────────────────────────────────
@@ -403,4 +390,4 @@ export default function Home() {
     </div>
   )
 }
-//v74
+//v75
