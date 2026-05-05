@@ -102,45 +102,106 @@ function GameCard({ game, onPlay, launching }) {
   )
 }
 
-// Provider Section - shows 8 games + View All
+// Auto-scroll carousel row
+function CarouselRow({ games, onPlay, launching, color, speed = 30 }) {
+  const rowRef = React.useRef(null)
+  const animRef = React.useRef(null)
+  const pausedRef = React.useRef(false)
+  const posRef = React.useRef(0)
+
+  // Duplicate games for infinite loop
+  const doubled = [...games, ...games]
+
+  React.useEffect(function() {
+    const row = rowRef.current
+    if (!row) return
+    const CARD_W = 150 // card width + gap
+    const totalW = games.length * CARD_W
+
+    function animate() {
+      if (!pausedRef.current) {
+        posRef.current += 0.5
+        if (posRef.current >= totalW) posRef.current = 0
+        if (row) row.scrollLeft = posRef.current
+      }
+      animRef.current = requestAnimationFrame(animate)
+    }
+    animRef.current = requestAnimationFrame(animate)
+    return function() { cancelAnimationFrame(animRef.current) }
+  }, [games.length])
+
+  function handleMouseEnter() { pausedRef.current = true }
+  function handleMouseLeave() { pausedRef.current = false }
+  function handleTouchStart() { pausedRef.current = true }
+  function handleTouchEnd() { setTimeout(function() { pausedRef.current = false }, 2000) }
+
+  function scrollLeft() {
+    pausedRef.current = true
+    posRef.current = Math.max(0, posRef.current - 300)
+    if (rowRef.current) rowRef.current.scrollLeft = posRef.current
+    setTimeout(function() { pausedRef.current = false }, 1500)
+  }
+  function scrollRight() {
+    pausedRef.current = true
+    posRef.current += 300
+    if (rowRef.current) rowRef.current.scrollLeft = posRef.current
+    setTimeout(function() { pausedRef.current = false }, 1500)
+  }
+
+  return (
+    <div style={{ position: 'relative', marginBottom: '10px' }}>
+      <button onClick={scrollLeft}
+        style={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 10, width: '32px', height: '32px', borderRadius: '50%', background: color + 'cc', border: 'none', color: 'white', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        ‹
+      </button>
+      <div ref={rowRef}
+        style={{ display: 'flex', gap: '10px', overflowX: 'scroll', scrollBehavior: 'auto', paddingBottom: '4px', paddingLeft: '36px', paddingRight: '36px', msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+        onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}
+      >
+        <style>{'.carousel-row::-webkit-scrollbar{display:none}'}</style>
+        {doubled.map(function(g, i) {
+          return (
+            <div key={g.game_uid + '-' + i} style={{ flexShrink: 0, width: '140px' }}>
+              <GameCard game={g} onPlay={onPlay} launching={launching} />
+            </div>
+          )
+        })}
+      </div>
+      <button onClick={scrollRight}
+        style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 10, width: '32px', height: '32px', borderRadius: '50%', background: color + 'cc', border: 'none', color: 'white', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        ›
+      </button>
+    </div>
+  )
+}
+
+// Provider Section - 30 games per row, auto-scroll carousel
 function ProviderSection({ provider, games, onPlay, launching, onViewAll }) {
   const cfg = PROVIDER_CONFIG[provider]
-  const preview = games.slice(0, 50)
+
+  // Split games into rows of 30
+  const rows = []
+  for (let i = 0; i < games.length; i += 30) {
+    rows.push(games.slice(i, i + 30))
+  }
 
   return (
     <div style={{ marginBottom: '32px' }}>
       {/* Provider Header */}
-      <div style={{ padding: '16px 20px', background: cfg.gradient, border: `1px solid ${cfg.border}`, borderRadius: '14px 14px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '24px' }}>{cfg.icon}</span>
-          <div>
-            <div style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(14px,3vw,18px)', color: cfg.color, fontWeight: '700' }}>{cfg.label}</div>
-            <div style={{ color: '#666', fontSize: '12px' }}>{games.length} games available</div>
-          </div>
+      <div style={{ padding: '14px 16px', background: cfg.gradient, border: `1px solid ${cfg.border}`, borderRadius: '14px 14px 0 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <span style={{ fontSize: '22px' }}>{cfg.icon}</span>
+        <div>
+          <div style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(13px,3vw,17px)', color: cfg.color, fontWeight: '700' }}>{cfg.label}</div>
+          <div style={{ color: '#666', fontSize: '11px' }}>{games.length} games</div>
         </div>
-        <button onClick={onViewAll}
-          style={{ padding: '8px 18px', borderRadius: '8px', background: cfg.color + '20', border: `1px solid ${cfg.border}`, color: cfg.color, fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>
-          View All →
-        </button>
       </div>
 
-      {/* Games Grid */}
-      <div style={{ padding: '16px', background: 'var(--bg-card)', border: `1px solid ${cfg.border}`, borderTop: 'none', borderRadius: '0 0 14px 14px' }}>
-        <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '8px' }}>
-          {preview.map(g => (
-            <div key={g.game_uid} style={{ flexShrink: 0, width: '140px' }}>
-              <GameCard game={g} onPlay={onPlay} launching={launching} />
-            </div>
-          ))}
-        </div>
-        {games.length > 8 && (
-          <div style={{ textAlign: 'center', marginTop: '14px' }}>
-            <button onClick={onViewAll}
-              style={{ padding: '10px 30px', borderRadius: '10px', background: `linear-gradient(135deg,${cfg.color},${cfg.color}bb)`, border: 'none', color: 'white', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}>
-              View All {games.length} Games →
-            </button>
-          </div>
-        )}
+      {/* Carousel Rows */}
+      <div style={{ padding: '12px 0', background: 'var(--bg-card)', border: `1px solid ${cfg.border}`, borderTop: 'none', borderRadius: '0 0 14px 14px' }}>
+        {rows.map(function(row, idx) {
+          return <CarouselRow key={idx} games={row} onPlay={onPlay} launching={launching} color={cfg.color} />
+        })}
       </div>
     </div>
   )
@@ -372,4 +433,4 @@ export default function LiveCasino() {
     </div>
   )
 }
-//v62
+//v63
