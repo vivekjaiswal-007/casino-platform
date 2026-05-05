@@ -64,11 +64,10 @@ function GameCard({ game, onPlay, launching }) {
 
   return (
     <div onClick={() => !busy && onPlay(game)}
-      style={{ background: 'var(--bg-card)', border: `1px solid ${color}28`, borderRadius: '12px', overflow: 'hidden', cursor: busy ? 'not-allowed' : 'pointer', transition: 'all 0.2s', position: 'relative' }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.borderColor = color + '60' }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.borderColor = color + '28' }}
+      style={{ background: '#1a1a28', border: '1px solid #2a2a3a', borderRadius: '10px', overflow: 'hidden', cursor: busy ? 'not-allowed' : 'pointer', transition: 'all 0.2s', position: 'relative' }}
+      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderColor = '#3a3a5a' }}
+      onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.borderColor = '#2a2a3a' }}
     >
-      <div style={{ height: '3px', background: `linear-gradient(90deg,${color},${color}55)` }} />
       <div style={{ padding: '14px 10px 10px', textAlign: 'center' }}>
         <div style={{ width: '100%', height: '90px', borderRadius: '6px', marginBottom: '6px', overflow: 'hidden', position: 'relative' }}>
           {game.img ? (
@@ -192,18 +191,18 @@ function ProviderSection({ provider, games, onPlay, launching, onViewAll }) {
   }
 
   return (
-    <div style={{ marginBottom: '32px' }}>
+    <div style={{ marginBottom: '24px' }}>
       {/* Provider Header */}
-      <div style={{ padding: '14px 16px', background: cfg.gradient, border: `1px solid ${cfg.border}`, borderRadius: '14px 14px 0 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <span style={{ fontSize: '22px' }}>{cfg.icon}</span>
+      <div style={{ padding: '12px 16px', background: '#16161f', borderRadius: '14px 14px 0 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <span style={{ fontSize: '20px' }}>{cfg.icon}</span>
         <div>
-          <div style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(13px,3vw,17px)', color: cfg.color, fontWeight: '700' }}>{cfg.label}</div>
-          <div style={{ color: '#666', fontSize: '11px' }}>{games.length} games</div>
+          <div style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(13px,3vw,16px)', color: '#ddd', fontWeight: '700' }}>{cfg.label}</div>
+          <div style={{ color: '#555', fontSize: '11px' }}>{games.length} games</div>
         </div>
       </div>
 
       {/* Carousel Rows */}
-      <div style={{ padding: '12px 0', background: 'var(--bg-card)', border: `1px solid ${cfg.border}`, borderTop: 'none', borderRadius: '0 0 14px 14px' }}>
+      <div style={{ padding: '12px 0', background: '#12121a', borderRadius: '0 0 14px 14px' }}>
         {rows.map(function(row, idx) {
           return <CarouselRow key={idx} games={row} onPlay={onPlay} launching={launching} color={cfg.color} />
         })}
@@ -438,3 +437,4 @@ export default function LiveCasino() {
     </div>
   )
 }
+//v65
