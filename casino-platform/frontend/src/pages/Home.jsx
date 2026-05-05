@@ -297,7 +297,6 @@ export default function Home() {
         <SectionRow key={section.id} section={section} onTagClick={handleTagClick} />
       ))}
 
-      {/* All Games */}
 
       {/* Live Casino Banner */}
       <section style={{ marginBottom: '24px' }}>
