@@ -29,6 +29,7 @@ import WhatsAppButton from './components/WhatsAppButton'
 import Dashboard from './pages/Dashboard'
 import GameLobby from './pages/GameLobby'
 import LiveCasino from './pages/LiveCasino'
+import AllGames from './pages/AllGames'
 
 // Games — default imports via re-export wrappers
 import AviatorGame from './games/AviatorGame'

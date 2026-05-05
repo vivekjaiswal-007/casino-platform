@@ -196,60 +196,6 @@ function SectionRow({ section, onTagClick }) {
   )
 }
 
-// ── All Games Grid ───────────────────────────────────────────────────────────
-function AllGamesSection() {
-  const [liveGames, setLiveGames] = React.useState([])
-  React.useEffect(function() {
-    fetch('/api/live-casino/games')
-      .then(function(r) { return r.json() })
-      .then(function(d) { setLiveGames(d.games || []) })
-      .catch(function() {})
-  }, [])
-
-  const combined = [
-    ...ALL_GAMES,
-    ...liveGames.map(function(g) {
-      return {
-        name: g.name,
-        path: '/live-casino',
-        icon: '🎰',
-        color: g.category === 'evolution' ? '#9944ff' : '#00d084',
-        cat: g.category === 'evolution' ? 'Evolution' : 'Mac88',
-      }
-    })
-  ]
-
-  return (
-    <section style={{ marginBottom: '32px' }}>
-      <h2 style={{ fontFamily: 'Cinzel,serif', fontSize: '18px', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        🎮 <span className="gold-text">All Games</span>
-        <span style={{ fontSize: '12px', color: '#555', fontWeight: '400' }}>({combined.length})</span>
-      </h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(100px,1fr))', gap: '8px' }}>
-        {combined.map((g, i) => (
-          <Link key={i} to={g.path} style={{ textDecoration: 'none' }}>
-            <div style={{
-              background: '#1a1a28',
-              borderRadius: '10px',
-              padding: '12px 8px',
-              textAlign: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-            onMouseLeave={e => e.currentTarget.style.transform = 'none'}
-            >
-              <div style={{ fontSize: '24px', marginBottom: '4px' }}>{g.icon}</div>
-              <div style={{ fontSize: '9px', fontWeight: '600', color: '#999', lineHeight: 1.3 }}>{g.name}</div>
-              {g.cat && <div style={{ fontSize: '8px', color: g.color || '#555', marginTop: '2px' }}>{g.cat}</div>}
-            </div>
-          </Link>
-        ))}
-      </div>
-    </section>
-  )
-}
-
 // ── Main Home ────────────────────────────────────────────────────────────────
 export default function Home() {
   const { user } = useStore()
@@ -352,7 +298,6 @@ export default function Home() {
       ))}
 
       {/* All Games */}
-      <AllGamesSection />
 
       {/* Live Casino Banner */}
       <section style={{ marginBottom: '24px' }}>
@@ -388,4 +333,3 @@ export default function Home() {
     </div>
   )
 }
-//v71
