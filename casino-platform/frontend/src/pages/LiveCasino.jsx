@@ -71,13 +71,18 @@ function GameCard({ game, onPlay, launching }) {
       <div style={{ height: '3px', background: `linear-gradient(90deg,${color},${color}55)` }} />
       <div style={{ padding: '14px 10px 10px', textAlign: 'center' }}>
         <div style={{ width: '100%', height: '90px', borderRadius: '6px', marginBottom: '6px', overflow: 'hidden', position: 'relative' }}>
-          {game.category === 'evolution' && game.img ? (
+          {game.img ? (
             <img src={game.img} alt={game.name}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              onError={e => { e.target.parentNode.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:32px;background:linear-gradient(135deg,#9944ff22,#9944ff44)">' + getEmoji(game.name) + '</div>' }}
+              onError={function(e) { 
+                const emoji = document.createElement('div')
+                emoji.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;background:linear-gradient(135deg,#1a1a2e,#16213e)'
+                emoji.textContent = '🎮'
+                e.target.parentNode.replaceChild(emoji, e.target)
+              }}
             />
           ) : (
-            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '36px', background: 'linear-gradient(135deg,#00208844,#00d08422)' }}>
+            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '36px', background: 'linear-gradient(135deg,#1a1a2e,#16213e)' }}>
               {getEmoji(game.name)}
             </div>
           )}
@@ -433,4 +438,3 @@ export default function LiveCasino() {
     </div>
   )
 }
-//v63
