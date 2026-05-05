@@ -186,8 +186,8 @@ function ProviderSection({ provider, games, onPlay, launching, onViewAll }) {
 
   // Split games into rows of 30
   const rows = []
-  for (let i = 0; i < games.length; i += 30) {
-    rows.push(games.slice(i, i + 30))
+  for (let i = 0; i < games.length; i += 20) {
+    rows.push(games.slice(i, i + 20))
   }
 
   return (
@@ -431,3 +431,4 @@ export default function LiveCasino() {
     </div>
   )
 }
+//v69
