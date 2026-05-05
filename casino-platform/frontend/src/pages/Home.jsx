@@ -197,16 +197,26 @@ function SectionRow({ section, onTagClick }) {
 }
 
 // ── All Games Grid ───────────────────────────────────────────────────────────
-function AllGamesSection({ liveGames }) {
+function AllGamesSection() {
+  const [liveGames, setLiveGames] = React.useState([])
+  React.useEffect(function() {
+    fetch('/api/live-casino/games')
+      .then(function(r) { return r.json() })
+      .then(function(d) { setLiveGames(d.games || []) })
+      .catch(function() {})
+  }, [])
+
   const combined = [
     ...ALL_GAMES,
-    ...(liveGames || []).slice(0, 20).map(g => ({
-      name: g.name,
-      path: '/live-casino',
-      icon: '🎰',
-      color: '#9944ff',
-      cat: 'Live',
-    }))
+    ...liveGames.map(function(g) {
+      return {
+        name: g.name,
+        path: '/live-casino',
+        icon: '🎰',
+        color: g.category === 'evolution' ? '#9944ff' : '#00d084',
+        cat: g.category === 'evolution' ? 'Evolution' : 'Mac88',
+      }
+    })
   ]
 
   return (
@@ -378,3 +388,4 @@ export default function Home() {
     </div>
   )
 }
+//v71
