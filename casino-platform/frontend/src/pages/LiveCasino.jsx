@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useStore, api } from '../store/useStore'
 import toast from 'react-hot-toast'
 
-// Return page after game exit
+// Return page
 function ReturnPage() {
   const navigate = useNavigate()
   useEffect(() => {
@@ -14,65 +14,183 @@ function ReturnPage() {
     <div style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
       <div style={{ fontSize: '48px' }}>🎮</div>
       <h2 style={{ fontFamily: 'Cinzel,serif', color: 'var(--gold)' }}>Game Over!</h2>
-      <p style={{ color: 'var(--text-secondary)' }}>Returning to Mac88 Live Casino...</p>
+      <p style={{ color: 'var(--text-secondary)' }}>Returning to Live Casino...</p>
     </div>
   )
 }
 
-const CAT_COLORS = { table: '#00d084', lottery: '#c9a227', arcade: '#9944ff', slots: '#ff8800', fishing: '#4488ff' }
-const CAT_ICONS  = { table: '🎲', lottery: '🎯', arcade: '🕹️', slots: '🎰', fishing: '🎣' }
-const CAT_LABELS = { table: 'Table Games', lottery: 'Lottery', arcade: 'Arcade', slots: 'Slots', fishing: 'Fishing' }
+const PROVIDER_CONFIG = {
+  mac88: {
+    label: 'Mac88 Live Casino',
+    icon: '🎰',
+    color: '#00d084',
+    gradient: 'linear-gradient(135deg,rgba(0,208,132,0.15),rgba(0,208,132,0.05))',
+    border: 'rgba(0,208,132,0.3)',
+    categories: ['table','lottery','crash','slots','virtual','casual'],
+    catLabels: { table:'Table Games', lottery:'Lottery', crash:'Crash Games', slots:'Slots', virtual:'Virtual', casual:'Casual' },
+    catIcons:  { table:'🎲', lottery:'🎯', crash:'✈️', slots:'🎰', virtual:'🖥️', casual:'🎮' },
+  },
+  evolution: {
+    label: 'Evolution Live Casino',
+    icon: '👑',
+    color: '#9944ff',
+    gradient: 'linear-gradient(135deg,rgba(153,68,255,0.15),rgba(153,68,255,0.05))',
+    border: 'rgba(153,68,255,0.3)',
+    categories: ['evolution'],
+    catLabels: { evolution:'All Games' },
+    catIcons:  { evolution:'👑' },
+  },
+}
 
 const GAME_EMOJI = {
-  '1 Day Dragon Tiger': '🐉', '10-10 Cricket': '🏏', '20-20 Teen Patti': '♠️',
-  '29 Baccarat': '🎴', '3 Cards Judgement': '🃏', '32 Cards': '🃏',
-  '5 Five Cricket': '🏏', '6 Player Poker': '♣️', 'AK47 Teen Patti': '🔫',
-  'AK47 VR': '🥽', 'Amar Akbar Anthony': '🎭',
-  '5D Lottery 1': '🎯', '5D Lottery 3': '🎯', '5D Lottery 5': '🎯', '5D Lottery 10': '🎯',
+  'Dragon Tiger':'🐉','Teen Patti':'♠️','Baccarat':'🎴','Roulette':'🎡',
+  'Andar Bahar':'🎯','Blackjack':'🃏','Sic Bo':'🎲','Poker':'♣️',
+  'Aviator':'✈️','Crash':'💥','Mines':'💣','Plinko':'🎳',
+  'Bollywood Casino':'🎬','Dream Wheel':'🎡','Funky Time':'🎉',
+  'Lightning':'⚡','Speed':'🚀','Cricket':'🏏','Color':'🎨',
+}
+
+function getEmoji(name) {
+  for (const [key, emoji] of Object.entries(GAME_EMOJI)) {
+    if (name.toLowerCase().includes(key.toLowerCase())) return emoji
+  }
+  return '🎮'
 }
 
 function GameCard({ game, onPlay, launching }) {
-  const color = CAT_COLORS[game.category] || '#c9a227'
-  const emoji = GAME_EMOJI[game.name] || '🎮'
-  const busy  = launching === game.game_uid
+  const isEvolution = game.category === 'evolution'
+  const color = isEvolution ? '#9944ff' : '#00d084'
+  const busy = launching === game.game_uid
 
   return (
-    <div
-      onClick={() => !busy && onPlay(game)}
-      style={{
-        background: 'var(--bg-card)', border: `1px solid ${color}28`,
-        borderRadius: '14px', overflow: 'hidden', cursor: busy ? 'not-allowed' : 'pointer',
-        transition: 'all 0.2s', position: 'relative', opacity: busy ? 0.8 : 1,
-      }}
+    <div onClick={() => !busy && onPlay(game)}
+      style={{ background: 'var(--bg-card)', border: `1px solid ${color}28`, borderRadius: '12px', overflow: 'hidden', cursor: busy ? 'not-allowed' : 'pointer', transition: 'all 0.2s', position: 'relative' }}
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.borderColor = color + '60' }}
       onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.borderColor = color + '28' }}
     >
-      <div style={{ height: '4px', background: `linear-gradient(90deg,${color},${color}55)` }} />
-      <div style={{ padding: '16px 12px 12px', textAlign: 'center' }}>
-        <div style={{ fontSize: 'clamp(30px,7vw,44px)', marginBottom: '8px' }}>{emoji}</div>
-        <div style={{ fontSize: 'clamp(11px,2.5vw,13px)', fontWeight: '700', color: '#ddd', marginBottom: '8px', lineHeight: 1.3 }}>
-          {game.name}
+      <div style={{ height: '3px', background: `linear-gradient(90deg,${color},${color}55)` }} />
+      <div style={{ padding: '14px 10px 10px', textAlign: 'center' }}>
+        <div style={{ fontSize: 'clamp(28px,6vw,38px)', marginBottom: '6px' }}>{getEmoji(game.name)}</div>
+        <div style={{ fontSize: 'clamp(10px,2.2vw,12px)', fontWeight: '700', color: '#ddd', marginBottom: '6px', lineHeight: 1.3 }}>{game.name}</div>
+        <div style={{ display: 'flex', gap: '3px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
+          {game.hot && <span style={{ fontSize: '8px', fontWeight: '800', padding: '2px 5px', borderRadius: '4px', background: 'rgba(255,68,68,0.18)', color: '#ff6666' }}>🔥 HOT</span>}
+          {game.new && <span style={{ fontSize: '8px', fontWeight: '800', padding: '2px 5px', borderRadius: '4px', background: 'rgba(0,208,132,0.18)', color: '#00d084' }}>✨ NEW</span>}
+          <span style={{ fontSize: '8px', fontWeight: '700', padding: '2px 5px', borderRadius: '4px', background: color + '18', color, textTransform: 'uppercase' }}>
+            {isEvolution ? 'EVO' : 'M88'}
+          </span>
         </div>
-        <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', marginBottom: '10px', flexWrap: 'wrap' }}>
-          {game.hot && <span style={{ fontSize: '9px', fontWeight: '800', padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,68,68,0.18)', color: '#ff6666', border: '1px solid rgba(255,68,68,0.25)' }}>🔥 HOT</span>}
-          {game.new && <span style={{ fontSize: '9px', fontWeight: '800', padding: '2px 6px', borderRadius: '4px', background: 'rgba(0,208,132,0.18)', color: '#00d084', border: '1px solid rgba(0,208,132,0.25)' }}>✨ NEW</span>}
-          <span style={{ fontSize: '9px', fontWeight: '700', padding: '2px 6px', borderRadius: '4px', background: color + '18', color, border: `1px solid ${color}30`, textTransform: 'uppercase' }}>Mac88</span>
-        </div>
-        <button
-          onClick={e => { e.stopPropagation(); onPlay(game) }}
-          disabled={busy}
-          style={{
-            width: '100%', padding: '8px', border: 'none', borderRadius: '8px',
-            background: busy ? color + '44' : `linear-gradient(135deg,${color},${color}bb)`,
-            color: busy ? 'rgba(255,255,255,0.5)' : 'white',
-            fontSize: '12px', fontWeight: '800', cursor: busy ? 'not-allowed' : 'pointer',
-          }}>
-          {busy ? '⏳ Loading...' : '▶ PLAY NOW'}
+        <button onClick={e => { e.stopPropagation(); onPlay(game) }} disabled={busy}
+          style={{ width: '100%', padding: '7px', border: 'none', borderRadius: '7px', background: busy ? color + '44' : `linear-gradient(135deg,${color},${color}bb)`, color: busy ? 'rgba(255,255,255,0.5)' : 'white', fontSize: '11px', fontWeight: '800', cursor: busy ? 'not-allowed' : 'pointer' }}>
+          {busy ? '⏳...' : '▶ PLAY'}
         </button>
       </div>
-      {busy && (
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '14px' }}>
-          <div style={{ width: '32px', height: '32px', border: `3px solid ${color}44`, borderTopColor: color, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      {busy && <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '12px' }}>
+        <div style={{ width: '28px', height: '28px', border: `3px solid ${color}44`, borderTopColor: color, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      </div>}
+    </div>
+  )
+}
+
+// Provider Section - shows 8 games + View All
+function ProviderSection({ provider, games, onPlay, launching, onViewAll }) {
+  const cfg = PROVIDER_CONFIG[provider]
+  const preview = games.slice(0, 8)
+
+  return (
+    <div style={{ marginBottom: '32px' }}>
+      {/* Provider Header */}
+      <div style={{ padding: '16px 20px', background: cfg.gradient, border: `1px solid ${cfg.border}`, borderRadius: '14px 14px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '24px' }}>{cfg.icon}</span>
+          <div>
+            <div style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(14px,3vw,18px)', color: cfg.color, fontWeight: '700' }}>{cfg.label}</div>
+            <div style={{ color: '#666', fontSize: '12px' }}>{games.length} games available</div>
+          </div>
+        </div>
+        <button onClick={onViewAll}
+          style={{ padding: '8px 18px', borderRadius: '8px', background: cfg.color + '20', border: `1px solid ${cfg.border}`, color: cfg.color, fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>
+          View All →
+        </button>
+      </div>
+
+      {/* Games Grid */}
+      <div style={{ padding: '16px', background: 'var(--bg-card)', border: `1px solid ${cfg.border}`, borderTop: 'none', borderRadius: '0 0 14px 14px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(130px,1fr))', gap: '10px' }}>
+          {preview.map(g => <GameCard key={g.game_uid} game={g} onPlay={onPlay} launching={launching} />)}
+        </div>
+        {games.length > 8 && (
+          <div style={{ textAlign: 'center', marginTop: '14px' }}>
+            <button onClick={onViewAll}
+              style={{ padding: '10px 30px', borderRadius: '10px', background: `linear-gradient(135deg,${cfg.color},${cfg.color}bb)`, border: 'none', color: 'white', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}>
+              View All {games.length} Games →
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// All Games Page for a specific provider
+function ProviderPage({ provider, games, onPlay, launching, onBack }) {
+  const cfg = PROVIDER_CONFIG[provider]
+  const [cat, setCat] = useState('all')
+  const [search, setSearch] = useState('')
+
+  const filtered = games.filter(g => {
+    if (cat !== 'all' && g.category !== cat) return false
+    if (search && !g.name.toLowerCase().includes(search.toLowerCase())) return false
+    return true
+  })
+
+  const cats = ['all', ...cfg.categories]
+
+  return (
+    <div>
+      {/* Back button */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+        <button onClick={onBack}
+          style={{ padding: '8px 16px', borderRadius: '8px', background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)', cursor: 'pointer', fontWeight: '600', fontSize: '13px' }}>
+          ← Back
+        </button>
+        <div>
+          <h2 style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(16px,4vw,22px)', color: cfg.color, margin: 0 }}>
+            {cfg.icon} {cfg.label}
+          </h2>
+          <p style={{ color: '#666', fontSize: '12px', margin: 0 }}>{games.length} games</p>
+        </div>
+      </div>
+
+      {/* Search */}
+      <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍 Search games..."
+        style={{ width: '100%', padding: '10px 14px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '10px', color: 'white', fontSize: '13px', outline: 'none', marginBottom: '12px', boxSizing: 'border-box' }}
+        onFocus={e => e.target.style.borderColor = cfg.color}
+        onBlur={e => e.target.style.borderColor = 'var(--border)'}
+      />
+
+      {/* Category tabs */}
+      <div style={{ display: 'flex', gap: '6px', marginBottom: '14px', overflowX: 'auto', paddingBottom: '4px' }}>
+        {cats.map(c => {
+          const active = cat === c
+          const count = c === 'all' ? games.length : games.filter(g => g.category === c).length
+          const label = c === 'all' ? '🎮 All' : (cfg.catIcons[c] || '') + ' ' + (cfg.catLabels[c] || c)
+          return (
+            <button key={c} onClick={() => setCat(c)}
+              style={{ padding: '7px 12px', borderRadius: '20px', border: `1px solid ${active ? cfg.color : 'var(--border)'}`, background: active ? cfg.color + '18' : 'var(--bg-card)', color: active ? cfg.color : 'var(--text-secondary)', fontWeight: active ? '700' : '400', fontSize: '11px', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}>
+              {label} ({count})
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Games */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(130px,1fr))', gap: '10px' }}>
+        {filtered.map(g => <GameCard key={g.game_uid} game={g} onPlay={onPlay} launching={launching} />)}
+      </div>
+      {filtered.length === 0 && (
+        <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>
+          <div style={{ fontSize: '40px', marginBottom: '12px' }}>🔍</div>
+          <p>No games found</p>
         </div>
       )}
     </div>
@@ -83,44 +201,35 @@ export default function LiveCasino() {
   const { user, balance } = useStore()
   const navigate = useNavigate()
 
-  // Return page
   if (window.location.pathname === '/live-casino/return') return <ReturnPage />
 
-  const [games,    setGames]    = useState([])
-  const [loading,  setLoading]  = useState(true)
-  const [error,    setError]    = useState(null)
-  const [launching,setLaunching]= useState(null)
-  const [cat,      setCat]      = useState('all')
-  const [search,   setSearch]   = useState('')
-  const [modal,    setModal]    = useState(null)
+  const [allGames, setAllGames] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [launching, setLaunching] = useState(null)
+  const [modal, setModal] = useState(null)
+  const [view, setView] = useState('home') // home | mac88 | evolution
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
-    setLoading(true)
     api.get('/live-casino/games')
       .then(function(r) {
-        var data = r.data
-        var list = []
-        if (data && Array.isArray(data.games)) list = data.games
-        else if (Array.isArray(data)) list = data
-        setGames(list)
+        const data = r.data
+        const list = data && Array.isArray(data.games) ? data.games : Array.isArray(data) ? data : []
+        setAllGames(list)
         setLoading(false)
       })
-      .catch(function() {
-        setError('Failed to load games. Please refresh.')
-        setLoading(false)
-      })
+      .catch(function() { setLoading(false); toast.error('Failed to load games') })
   }, [])
+
+  const mac88Games = allGames.filter(g => g.category !== 'evolution')
+  const evolutionGames = allGames.filter(g => g.category === 'evolution')
 
   async function playGame(game) {
     if (!user) { toast.error('Please login to play!'); navigate('/login'); return }
     if (balance < 1) { toast.error('Insufficient balance!'); return }
     setLaunching(game.game_uid)
     try {
-      const resp = await api.post('/live-casino/launch', {
-        game_uid: game.game_uid,
-        language: 'hi',
-        currency_code: 'INR',
-      })
+      const resp = await api.post('/live-casino/launch', { game_uid: game.game_uid, language: 'hi', currency_code: 'INR' })
       const data = resp.data
       if (data.success && data.gameUrl) {
         setModal(data.gameUrl)
@@ -134,117 +243,111 @@ export default function LiveCasino() {
     setLaunching(null)
   }
 
-  const cats = ['all', 'table', 'evolution', 'crash', 'lottery', 'slots', 'virtual', 'casual']
-  const filtered = games.filter(function(g) {
-    if (cat !== 'all' && g.category !== cat) return false
-    if (search && g.name.toLowerCase().indexOf(search.toLowerCase()) === -1) return false
-    return true
-  })
+  // Home search
+  const homeSearch = search
+    ? allGames.filter(g => g.name.toLowerCase().includes(search.toLowerCase()))
+    : null
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
       {/* Game iframe modal */}
       {modal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.95)', zIndex: 9999, display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', background: '#0a0a0f' }}>
-            <span style={{ color: 'var(--gold)', fontFamily: 'Cinzel,serif', fontSize: '16px' }}>🎮 Mac88 Live Game</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', background: '#0a0a0f', flexShrink: 0 }}>
+            <span style={{ color: 'var(--gold)', fontFamily: 'Cinzel,serif', fontSize: '16px' }}>🎮 Live Game</span>
             <button onClick={() => setModal(null)}
               style={{ padding: '8px 20px', background: 'rgba(255,68,68,0.15)', border: '1px solid rgba(255,68,68,0.4)', borderRadius: '8px', color: '#ff6666', cursor: 'pointer', fontWeight: '700' }}>
               ✕ Exit Game
             </button>
           </div>
-          <iframe src={modal} style={{ flex: 1, border: 'none' }} allow="autoplay; fullscreen" title="Mac88 Game" />
+          <iframe src={modal} style={{ flex: 1, border: 'none' }} allow="autoplay; fullscreen" title="Live Game" />
         </div>
       )}
 
-      {/* Header */}
-      <div style={{ marginBottom: '16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-          <span style={{ fontSize: '10px', fontWeight: '800', color: '#ff4444', letterSpacing: '2px', padding: '3px 8px', background: 'rgba(255,68,68,0.15)', borderRadius: '4px', border: '1px solid rgba(255,68,68,0.3)', animation: 'livePulse 1.5s ease infinite' }}>● LIVE</span>
-          <h1 style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(18px,4vw,26px)', margin: 0 }}>
-            <span className="gold-text">Mac88 Live Casino</span>
-          </h1>
-        </div>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '13px', margin: 0 }}>
-          {games.length} games • Real money • Instant launch
-        </p>
-      </div>
-
-      {/* Balance banner */}
-      <div style={{ padding: '12px 16px', background: 'linear-gradient(135deg,rgba(201,162,39,0.1),rgba(0,208,132,0.08))', border: '1px solid rgba(201,162,39,0.2)', borderRadius: '10px', marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '24px' }}>🎰</span>
-          <div>
-            <div style={{ fontWeight: '700', color: '#ddd', fontSize: '14px' }}>Mac88 Games — Official</div>
-            <div style={{ color: '#666', fontSize: '12px' }}>Table Games • Lottery • Real Money</div>
-          </div>
-        </div>
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ color: 'var(--gold)', fontWeight: '800', fontSize: '15px' }}>🪙 {balance ? balance.toLocaleString() : 0}</div>
-          <div style={{ color: '#555', fontSize: '11px' }}>Your Balance</div>
-        </div>
-      </div>
-
-      {/* Search */}
-      <div style={{ position: 'relative', marginBottom: '12px' }}>
-        <input value={search} onChange={function(e) { setSearch(e.target.value) }}
-          placeholder="🔍 Search Mac88 games..."
-          style={{ width: '100%', padding: '11px 16px 11px 16px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '10px', color: 'white', fontSize: '14px', outline: 'none', boxSizing: 'border-box' }}
-          onFocus={function(e) { e.target.style.borderColor = 'var(--gold)' }}
-          onBlur={function(e) { e.target.style.borderColor = 'var(--border)' }}
-        />
-        {search && <button onClick={function() { setSearch('') }} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#666', cursor: 'pointer', fontSize: '16px' }}>✕</button>}
-      </div>
-
-      {/* Category tabs */}
-      <div style={{ display: 'flex', gap: '6px', marginBottom: '16px', overflowX: 'auto', paddingBottom: '4px' }}>
-        {cats.map(function(c2) {
-          const active = cat === c2
-          const color = c2 === 'all' ? 'var(--gold)' : CAT_COLORS[c2] || 'var(--gold)'
-          const label = c2 === 'all' ? '🎮 All Games' : (CAT_ICONS[c2] || '') + ' ' + (CAT_LABELS[c2] || c2)
-          const count = c2 === 'all' ? games.length : games.filter(function(g) { return g.category === c2 }).length
-          return (
-            <button key={c2} onClick={function() { setCat(c2) }}
-              style={{ padding: '8px 14px', borderRadius: '20px', border: '1px solid ' + (active ? color : 'var(--border)'), background: active ? color + '18' : 'var(--bg-card)', color: active ? color : 'var(--text-secondary)', fontWeight: active ? '700' : '400', fontSize: '12px', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}>
-              {label} ({count})
-            </button>
-          )
-        })}
-      </div>
-
-      {/* Games */}
-      {loading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}>
-          <div style={{ width: '40px', height: '40px', border: '3px solid #2a2a3a', borderTopColor: 'var(--gold)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-        </div>
-      ) : error ? (
-        <div style={{ textAlign: 'center', padding: '60px', color: '#ff4444' }}>
-          <div style={{ fontSize: '40px', marginBottom: '12px' }}>⚠️</div>
-          <p>{error}</p>
-          <button onClick={function() { window.location.reload() }} style={{ padding: '10px 20px', background: 'var(--gold)', border: 'none', borderRadius: '8px', color: '#000', fontWeight: '700', cursor: 'pointer', marginTop: '12px' }}>Retry</button>
-        </div>
-      ) : filtered.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: '40px', marginBottom: '12px' }}>🔍</div>
-          <p>No games found</p>
-        </div>
-      ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(140px,1fr))', gap: '12px' }}>
-          {filtered.map(function(game) {
-            return <GameCard key={game.game_uid} game={game} onPlay={playGame} launching={launching} />
-          })}
-        </div>
+      {/* Provider page view */}
+      {view === 'mac88' && (
+        <ProviderPage provider="mac88" games={mac88Games} onPlay={playGame} launching={launching} onBack={() => setView('home')} />
+      )}
+      {view === 'evolution' && (
+        <ProviderPage provider="evolution" games={evolutionGames} onPlay={playGame} launching={launching} onBack={() => setView('home')} />
       )}
 
-      {/* Login prompt */}
-      {!user && (
-        <div style={{ marginTop: '24px', padding: '16px', background: 'rgba(201,162,39,0.06)', border: '1px solid rgba(201,162,39,0.15)', borderRadius: '12px', textAlign: 'center' }}>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '10px' }}>Login to play Mac88 live games! 🎰</p>
-          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-            <button onClick={function() { navigate('/login') }} className="btn-gold" style={{ padding: '9px 20px' }}>Login</button>
-            <button onClick={function() { navigate('/signup') }} style={{ padding: '9px 20px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-secondary)', cursor: 'pointer', fontWeight: '600', fontSize: '13px' }}>Sign Up Free</button>
+      {/* Home view */}
+      {view === 'home' && (
+        <>
+          {/* Header */}
+          <div style={{ marginBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+              <span style={{ fontSize: '10px', fontWeight: '800', color: '#ff4444', letterSpacing: '2px', padding: '3px 8px', background: 'rgba(255,68,68,0.15)', borderRadius: '4px', border: '1px solid rgba(255,68,68,0.3)', animation: 'livePulse 1.5s ease infinite' }}>● LIVE</span>
+              <h1 style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(18px,4vw,26px)', margin: 0 }}>
+                <span className="gold-text">Live Casino</span>
+              </h1>
+            </div>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '13px', margin: 0 }}>
+              {allGames.length} games • Mac88 + Evolution • Real money
+            </p>
           </div>
-        </div>
+
+          {/* Balance */}
+          <div style={{ padding: '12px 16px', background: 'rgba(201,162,39,0.08)', border: '1px solid rgba(201,162,39,0.2)', borderRadius: '10px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>Your Balance</span>
+            <span style={{ color: 'var(--gold)', fontWeight: '800', fontSize: '16px' }}>🪙 {balance ? balance.toLocaleString() : 0}</span>
+          </div>
+
+          {/* Global Search */}
+          <div style={{ position: 'relative', marginBottom: '20px' }}>
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍 Search all games..."
+              style={{ width: '100%', padding: '11px 16px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '10px', color: 'white', fontSize: '14px', outline: 'none', boxSizing: 'border-box' }}
+              onFocus={e => e.target.style.borderColor = 'var(--gold)'}
+              onBlur={e => e.target.style.borderColor = 'var(--border)'}
+            />
+            {search && <button onClick={() => setSearch('')} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#666', cursor: 'pointer', fontSize: '16px' }}>✕</button>}
+          </div>
+
+          {loading ? (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}>
+              <div style={{ width: '40px', height: '40px', border: '3px solid #2a2a3a', borderTopColor: 'var(--gold)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+            </div>
+          ) : homeSearch ? (
+            <>
+              <div style={{ marginBottom: '12px', color: 'var(--text-secondary)', fontSize: '13px' }}>{homeSearch.length} results for "{search}"</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(130px,1fr))', gap: '10px' }}>
+                {homeSearch.map(g => <GameCard key={g.game_uid} game={g} onPlay={playGame} launching={launching} />)}
+              </div>
+              {homeSearch.length === 0 && <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>No games found</div>}
+            </>
+          ) : (
+            <>
+              {/* Mac88 Section */}
+              <ProviderSection
+                provider="mac88"
+                games={mac88Games}
+                onPlay={playGame}
+                launching={launching}
+                onViewAll={() => setView('mac88')}
+              />
+
+              {/* Evolution Section */}
+              <ProviderSection
+                provider="evolution"
+                games={evolutionGames}
+                onPlay={playGame}
+                launching={launching}
+                onViewAll={() => setView('evolution')}
+              />
+            </>
+          )}
+
+          {!user && (
+            <div style={{ marginTop: '24px', padding: '16px', background: 'rgba(201,162,39,0.06)', border: '1px solid rgba(201,162,39,0.15)', borderRadius: '12px', textAlign: 'center' }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '10px' }}>Login to play live games! 🎰</p>
+              <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                <button onClick={() => navigate('/login')} className="btn-gold" style={{ padding: '9px 20px' }}>Login</button>
+                <button onClick={() => navigate('/signup')} style={{ padding: '9px 20px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-secondary)', cursor: 'pointer', fontWeight: '600', fontSize: '13px' }}>Sign Up Free</button>
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       <style>{`
@@ -254,3 +357,4 @@ export default function LiveCasino() {
     </div>
   )
 }
+//v60
