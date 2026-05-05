@@ -107,7 +107,7 @@ function GameCard({ game, onPlay, launching }) {
 }
 
 // Auto-scroll carousel row
-function CarouselRow({ games, onPlay, launching, color, speed = 30 }) {
+function CarouselRow({ games, onPlay, launching, color, speed = 30, title }) {
   const rowRef = React.useRef(null)
   const animRef = React.useRef(null)
   const pausedRef = React.useRef(false)
@@ -153,7 +153,13 @@ function CarouselRow({ games, onPlay, launching, color, speed = 30 }) {
   }
 
   return (
-    <div style={{ position: 'relative', marginBottom: '10px' }}>
+    <div style={{ marginBottom: '16px' }}>
+      {title && (
+        <div style={{ fontSize: '12px', fontWeight: '700', color: '#aaa', marginBottom: '6px', paddingLeft: '36px', letterSpacing: '0.5px' }}>
+          {title}
+        </div>
+      )}
+    <div style={{ position: 'relative' }}>
       <button onClick={scrollLeft}
         style={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 10, width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         ‹
@@ -177,6 +183,7 @@ function CarouselRow({ games, onPlay, launching, color, speed = 30 }) {
         ›
       </button>
     </div>
+    </div>
   )
 }
 
@@ -198,7 +205,10 @@ function ProviderSection({ provider, games, onPlay, launching, onViewAll }) {
       {/* Carousel Rows */}
       <div style={{ padding: '12px 0', background: '#12121a', borderRadius: '14px' }}>
         {rows.map(function(row, idx) {
-          return <CarouselRow key={idx} games={row} onPlay={onPlay} launching={launching} color='#888' />
+          const mac88Titles = ['🔥 Hot Games','⭐ Featured Games','🎯 Popular Games','🆕 New Arrivals','🏆 Top Picks','🎰 Casino Classics','💥 Crash & Win','🎲 Table Games']
+          const evoTitles = ['👑 Evolution Premium','⚡ Lightning Series','🃏 Live Blackjack','🎡 Live Roulette','🎴 Live Baccarat']
+          const titles = provider === 'evolution' ? evoTitles : mac88Titles
+          return <CarouselRow key={idx} games={row} onPlay={onPlay} launching={launching} color='#888' title={titles[idx] || ('🎮 Games ' + (idx+1))} />
         })}
       </div>
     </div>
@@ -431,4 +441,4 @@ export default function LiveCasino() {
     </div>
   )
 }
-//v69
+//v70
