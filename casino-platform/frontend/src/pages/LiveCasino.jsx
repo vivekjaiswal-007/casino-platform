@@ -64,9 +64,9 @@ function GameCard({ game, onPlay, launching }) {
 
   return (
     <div onClick={() => !busy && onPlay(game)}
-      style={{ background: '#1a1a28', border: '1px solid #2a2a3a', borderRadius: '10px', overflow: 'hidden', cursor: busy ? 'not-allowed' : 'pointer', transition: 'all 0.2s', position: 'relative' }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderColor = '#3a3a5a' }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.borderColor = '#2a2a3a' }}
+      style={{ background: '#1a1a28', border: 'none', borderRadius: '10px', overflow: 'hidden', cursor: busy ? 'not-allowed' : 'pointer', transition: 'all 0.2s', position: 'relative' }}
+      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)';  }}
+      onMouseLeave={e => { e.currentTarget.style.transform = 'none';  }}
     >
       <div style={{ padding: '14px 10px 10px', textAlign: 'center' }}>
         <div style={{ width: '100%', height: '90px', borderRadius: '6px', marginBottom: '6px', overflow: 'hidden', position: 'relative' }}>
@@ -95,12 +95,12 @@ function GameCard({ game, onPlay, launching }) {
           </span>
         </div>
         <button onClick={e => { e.stopPropagation(); onPlay(game) }} disabled={busy}
-          style={{ width: '100%', padding: '7px', border: 'none', borderRadius: '7px', background: busy ? color + '44' : `linear-gradient(135deg,${color},${color}bb)`, color: busy ? 'rgba(255,255,255,0.5)' : 'white', fontSize: '11px', fontWeight: '800', cursor: busy ? 'not-allowed' : 'pointer' }}>
+          style={{ width: '100%', padding: '7px', border: 'none', borderRadius: '7px', background: busy ? '#333' : '#2a2a3a', color: 'white', fontSize: '11px', fontWeight: '800', cursor: busy ? 'not-allowed' : 'pointer' }}>
           {busy ? '⏳...' : '▶ PLAY'}
         </button>
       </div>
       {busy && <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '12px' }}>
-        <div style={{ width: '28px', height: '28px', border: `3px solid ${color}44`, borderTopColor: color, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        <div style={{ width: '28px', height: '28px', border: '3px solid #333', borderTopColor: '#888', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
       </div>}
     </div>
   )
@@ -155,7 +155,7 @@ function CarouselRow({ games, onPlay, launching, color, speed = 30 }) {
   return (
     <div style={{ position: 'relative', marginBottom: '10px' }}>
       <button onClick={scrollLeft}
-        style={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 10, width: '32px', height: '32px', borderRadius: '50%', background: color + 'cc', border: 'none', color: 'white', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        style={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 10, width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         ‹
       </button>
       <div ref={rowRef}
@@ -173,7 +173,7 @@ function CarouselRow({ games, onPlay, launching, color, speed = 30 }) {
         })}
       </div>
       <button onClick={scrollRight}
-        style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 10, width: '32px', height: '32px', borderRadius: '50%', background: color + 'cc', border: 'none', color: 'white', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 10, width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         ›
       </button>
     </div>
@@ -193,18 +193,12 @@ function ProviderSection({ provider, games, onPlay, launching, onViewAll }) {
   return (
     <div style={{ marginBottom: '24px' }}>
       {/* Provider Header */}
-      <div style={{ padding: '12px 16px', background: '#16161f', borderRadius: '14px 14px 0 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <span style={{ fontSize: '20px' }}>{cfg.icon}</span>
-        <div>
-          <div style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(13px,3vw,16px)', color: '#ddd', fontWeight: '700' }}>{cfg.label}</div>
-          <div style={{ color: '#555', fontSize: '11px' }}>{games.length} games</div>
-        </div>
-      </div>
+
 
       {/* Carousel Rows */}
-      <div style={{ padding: '12px 0', background: '#12121a', borderRadius: '0 0 14px 14px' }}>
+      <div style={{ padding: '12px 0', background: '#12121a', borderRadius: '14px' }}>
         {rows.map(function(row, idx) {
-          return <CarouselRow key={idx} games={row} onPlay={onPlay} launching={launching} color={cfg.color} />
+          return <CarouselRow key={idx} games={row} onPlay={onPlay} launching={launching} color='#888' />
         })}
       </div>
     </div>
@@ -437,4 +431,4 @@ export default function LiveCasino() {
     </div>
   )
 }
-//v65
+//v67
