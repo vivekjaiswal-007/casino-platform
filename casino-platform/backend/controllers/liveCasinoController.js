@@ -104,64 +104,74 @@ export const gameCallback = async (req, res) => {
   res.setHeader('Content-Type', 'application/json')
   try {
     const { game_uid, game_round, member_account, bet_amount, win_amount } = req.body
-    if (!member_account || bet_amount === undefined || win_amount === undefined) {
-      return res.json({ credit_amount: -1, error: 'Missing fields' })
+
+    console.log('CB:', JSON.stringify({ member_account, bet_amount, win_amount, game_round }))
+
+    if (!member_account) {
+      return res.json({ credit_amount: -1, error: 'Missing member_account' })
     }
 
     const bet = parseFloat(bet_amount) || 0
     const win = parseFloat(win_amount) || 0
-    const net = win - bet
 
-    // Skip if no actual transaction
+    // Skip empty callbacks
     if (bet === 0 && win === 0) {
       return res.json({ credit_amount: 0, timestamp: Date.now() })
     }
 
-    // FIX 2: Find user by softagiId
+    // Find user
     let user = await User.findOne({ softagiId: Number(member_account) })
+    if (!user) user = await User.findById(member_account).catch(() => null)
     if (!user) {
-      user = await User.findById(member_account).catch(() => null)
-    }
-    if (!user) {
-      console.error('Callback: user not found for member_account:', member_account)
+      console.error('User not found:', member_account)
       return res.json({ credit_amount: 0, timestamp: Date.now() })
     }
 
-    // FIX 3: Skip duplicate round processing
-    const existingBet = await Bet.findOne({ 'result.game_round': game_round })
-    if (existingBet) {
-      console.log('Duplicate round skipped:', game_round)
-      const credit = parseFloat(Math.max(0, bet - win).toFixed(2))
-      return res.json({ credit_amount: credit, timestamp: Date.now() })
+    // Skip duplicate rounds
+    if (game_round) {
+      const existing = await Bet.findOne({ 'result.game_round': game_round, userId: user._id })
+      if (existing) {
+        console.log('Duplicate skipped:', game_round)
+        return res.json({ credit_amount: Math.max(0, bet - win), timestamp: Date.now() })
+      }
     }
 
+    // Calculate net change
+    const net = win - bet
     const balanceBefore = user.balance
 
-    // Only credit wins - never deduct via callback
-    if (win > bet) {
-      user.balance = Math.max(0, user.balance + (win - bet))
-      await user.save()
+    // Update balance
+    user.balance = Math.max(0, user.balance + net)
+    await user.save()
 
+    // Record bet
+    if (bet > 0 || win > 0) {
       await Bet.create({
         userId: user._id,
-        game: `Live Game ${game_uid}`,
-        betAmount: Math.max(1, bet), payout: win, profit: net,
+        game: 'live-casino',
+        betAmount: Math.max(1, bet),
+        payout: win,
+        profit: net,
         status: win >= bet ? 'won' : 'lost',
-        result: { game_uid, game_round }, settledAt: new Date(),
-      })
+        result: { game_uid, game_round },
+        settledAt: new Date(),
+      }).catch(e => console.log('Bet create error:', e.message))
 
       await WalletTransaction.create({
-        userId: user._id, type: net > 0 ? 'game_win' : 'game_bet',
-        amount: Math.abs(net), balanceBefore, balanceAfter: user.balance,
-        description: `Live Game ${game_uid}`,
-      })
+        userId: user._id,
+        type: net > 0 ? 'game_win' : 'game_bet',
+        amount: Math.abs(net),
+        balanceBefore,
+        balanceAfter: user.balance,
+        description: 'Live Casino',
+      }).catch(e => console.log('Wallet create error:', e.message))
     }
 
-    const credit = parseFloat(Math.max(0, bet - win).toFixed(2))
-    console.log(`Callback OK: member=${member_account} bet=${bet} win=${win} net=${net} credit=${credit} balance=${user.balance}`)
+    const credit = Math.max(0, bet - win)
+    console.log('CB OK: bet=' + bet + ' win=' + win + ' net=' + net + ' balance=' + user.balance)
     res.json({ credit_amount: credit, timestamp: Date.now() })
   } catch (err) {
-    console.error('Callback error:', err.message)
+    console.error('CB Error:', err.message)
     res.json({ credit_amount: -1, error: err.message })
   }
 }
@@ -175,4 +185,4 @@ export const getLiveBalance = async (req, res) => {
     res.status(500).json({ success: false, message: err.message })
   }
 }
-//v55
+//v57
