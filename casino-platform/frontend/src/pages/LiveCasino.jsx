@@ -70,7 +70,13 @@ function GameCard({ game, onPlay, launching }) {
     >
       <div style={{ height: '3px', background: `linear-gradient(90deg,${color},${color}55)` }} />
       <div style={{ padding: '14px 10px 10px', textAlign: 'center' }}>
-        <div style={{ fontSize: 'clamp(28px,6vw,38px)', marginBottom: '6px' }}>{getEmoji(game.name)}</div>
+        {game.img ? (
+          <img src={game.img} alt={game.name}
+            style={{ width: '100%', height: '80px', objectFit: 'cover', borderRadius: '6px', marginBottom: '6px' }}
+            onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='block' }}
+          />
+        ) : null}
+        <div style={{ fontSize: 'clamp(28px,6vw,38px)', marginBottom: '6px', display: game.img ? 'none' : 'block' }}>{getEmoji(game.name)}</div>
         <div style={{ fontSize: 'clamp(10px,2.2vw,12px)', fontWeight: '700', color: '#ddd', marginBottom: '6px', lineHeight: 1.3 }}>{game.name}</div>
         <div style={{ display: 'flex', gap: '3px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
           {game.hot && <span style={{ fontSize: '8px', fontWeight: '800', padding: '2px 5px', borderRadius: '4px', background: 'rgba(255,68,68,0.18)', color: '#ff6666' }}>🔥 HOT</span>}
@@ -94,7 +100,7 @@ function GameCard({ game, onPlay, launching }) {
 // Provider Section - shows 8 games + View All
 function ProviderSection({ provider, games, onPlay, launching, onViewAll }) {
   const cfg = PROVIDER_CONFIG[provider]
-  const preview = games.slice(0, 8)
+  const preview = games.slice(0, 15)
 
   return (
     <div style={{ marginBottom: '32px' }}>
@@ -115,8 +121,12 @@ function ProviderSection({ provider, games, onPlay, launching, onViewAll }) {
 
       {/* Games Grid */}
       <div style={{ padding: '16px', background: 'var(--bg-card)', border: `1px solid ${cfg.border}`, borderTop: 'none', borderRadius: '0 0 14px 14px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(130px,1fr))', gap: '10px' }}>
-          {preview.map(g => <GameCard key={g.game_uid} game={g} onPlay={onPlay} launching={launching} />)}
+        <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '8px' }}>
+          {preview.map(g => (
+            <div key={g.game_uid} style={{ flexShrink: 0, width: '140px' }}>
+              <GameCard game={g} onPlay={onPlay} launching={launching} />
+            </div>
+          ))}
         </div>
         {games.length > 8 && (
           <div style={{ textAlign: 'center', marginTop: '14px' }}>
@@ -357,4 +367,4 @@ export default function LiveCasino() {
     </div>
   )
 }
-//v60
+//v61
