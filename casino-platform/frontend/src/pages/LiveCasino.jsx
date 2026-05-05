@@ -134,7 +134,7 @@ export default function LiveCasino() {
     setLaunching(null)
   }
 
-  const cats = ['all', 'table', 'lottery']
+  const cats = ['all', 'table', 'evolution', 'crash', 'lottery', 'slots', 'virtual', 'casual']
   const filtered = games.filter(function(g) {
     if (cat !== 'all' && g.category !== cat) return false
     if (search && g.name.toLowerCase().indexOf(search.toLowerCase()) === -1) return false
