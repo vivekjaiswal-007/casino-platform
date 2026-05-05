@@ -196,6 +196,74 @@ function SectionRow({ section, onTagClick }) {
   )
 }
 
+
+// ── Live Games on Home ───────────────────────────────────────────────────────
+function LiveGamesHome() {
+  const [games, setGames] = React.useState([])
+
+  React.useEffect(function() {
+    fetch('/api/live-casino/games')
+      .then(function(r) { return r.json() })
+      .then(function(d) { setGames(d.games || []) })
+      .catch(function() {})
+  }, [])
+
+  if (games.length === 0) return null
+
+  // Split by provider
+  const mac88 = games.filter(function(g) { return g.category !== 'evolution' })
+  const evo = games.filter(function(g) { return g.category === 'evolution' })
+
+  function GameRow({ title, list }) {
+    return (
+      <div style={{ marginBottom: '20px' }}>
+        <div style={{ fontSize: '12px', fontWeight: '700', color: '#aaa', marginBottom: '8px' }}>{title}</div>
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none' }}>
+          {list.map(function(g, i) {
+            return (
+              <Link key={i} to="/live-casino" style={{ textDecoration: 'none', flexShrink: 0 }}>
+                <div style={{ width: '110px', background: '#1a1a28', borderRadius: '10px', overflow: 'hidden', cursor: 'pointer' }}>
+                  {g.img ? (
+                    <img src={g.img} alt={g.name} style={{ width: '100%', height: '65px', objectFit: 'cover', display: 'block' }}
+                      onError={function(e) { e.target.style.display='none' }}
+                    />
+                  ) : (
+                    <div style={{ height: '65px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '26px', background: '#222' }}>🎰</div>
+                  )}
+                  <div style={{ padding: '5px 6px', fontSize: '9px', color: '#aaa', fontWeight: '600', lineHeight: 1.3 }}>{g.name}</div>
+                </div>
+              </Link>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
+
+  // Split mac88 into rows of 20
+  const mac88Titles = ['🔥 Hot Games','⭐ Featured','🎯 Popular','🆕 New Arrivals','🏆 Top Picks','🎰 Casino Classics','💥 Crash & Win','🎲 Table Games']
+  const mac88Rows = []
+  for (var i = 0; i < mac88.length; i += 20) {
+    mac88Rows.push({ title: mac88Titles[mac88Rows.length] || '🎮 Games', list: mac88.slice(i, i + 20) })
+  }
+
+  const evoTitles = ['👑 Evolution Premium','⚡ Lightning Series','🃏 Live Blackjack','🎡 Live Roulette','🎴 Live Baccarat']
+  const evoRows = []
+  for (var j = 0; j < evo.length; j += 20) {
+    evoRows.push({ title: evoTitles[evoRows.length] || '👑 Evolution', list: evo.slice(j, j + 20) })
+  }
+
+  return (
+    <section style={{ marginBottom: '24px' }}>
+      <h2 style={{ fontFamily: 'Cinzel,serif', fontSize: '18px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        🔴 <span className="gold-text">Live Casino</span>
+      </h2>
+      {mac88Rows.map(function(row, i) { return <GameRow key={'m'+i} title={row.title} list={row.list} /> })}
+      {evoRows.map(function(row, i) { return <GameRow key={'e'+i} title={row.title} list={row.list} /> })}
+    </section>
+  )
+}
+
 // ── Main Home ────────────────────────────────────────────────────────────────
 export default function Home() {
   const { user } = useStore()
@@ -298,6 +366,9 @@ export default function Home() {
       ))}
 
 
+      {/* Live Casino Games on Home */}
+      <LiveGamesHome />
+
       {/* Live Casino Banner */}
       <section style={{ marginBottom: '24px' }}>
         <Link to="/live-casino" style={{ textDecoration: 'none' }}>
@@ -332,3 +403,4 @@ export default function Home() {
     </div>
   )
 }
+//v74
