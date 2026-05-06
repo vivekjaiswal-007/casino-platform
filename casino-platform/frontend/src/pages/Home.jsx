@@ -62,6 +62,50 @@ function FeaturedCard({ game }) {
 }
 
 
+
+function LuckySportEmbed() {
+  const [url, setUrl] = React.useState(null)
+  const [loading, setLoading] = React.useState(true)
+  const [error, setError] = React.useState(false)
+
+  React.useEffect(function() {
+    api.post('/live-casino/launch', { game_uid: '7004', language: 'hi', currency_code: 'INR' })
+      .then(function(r) {
+        if (r.data.success && r.data.gameUrl) {
+          setUrl(r.data.gameUrl)
+        } else {
+          setError(true)
+        }
+        setLoading(false)
+      })
+      .catch(function() { setError(true); setLoading(false) })
+  }, [])
+
+  if (error) return null
+  if (loading) return (
+    <div style={{ height: '400px', background: '#1a1a28', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', color: '#555', fontSize: '14px' }}>
+      ⏳ Loading Live Sports...
+    </div>
+  )
+
+  return (
+    <section style={{ marginBottom: '20px' }}>
+      <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ff4444', animation: 'pulse 1.4s infinite' }} />
+        <span style={{ fontSize: '13px', fontWeight: '700', color: '#ddd' }}>🏏 Live Sports Betting</span>
+      </div>
+      <div style={{ borderRadius: '12px', overflow: 'hidden', background: '#1a1a28' }}>
+        <iframe
+          src={url}
+          style={{ width: '100%', height: '500px', border: 'none', display: 'block' }}
+          allow="autoplay; fullscreen"
+          title="Live Sports"
+        />
+      </div>
+    </section>
+  )
+}
+
 function AutoScrollRow({ children, count }) {
   const rowRef = React.useRef(null)
   const animRef = React.useRef(null)
@@ -174,6 +218,9 @@ export default function Home() {
         </div>
       )}
 
+      {/* LuckySport Live Cricket Embed */}
+      {user && <LuckySportEmbed />}
+
       {/* 6 Featured Games — 3 per row 16:9 */}
       <section style={{ marginBottom: '24px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '10px' }}>
@@ -283,3 +330,4 @@ export default function Home() {
     </div>
   )
 }
+//v85
