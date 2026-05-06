@@ -48,6 +48,7 @@ import BlackjackGame from './games/BlackjackGame'
 import BaccaratGame from './games/BaccaratGame'
 import TeenPattiGame from './games/TeenPattiGame'
 import AndarBahar from './games/AndarBahar'
+import GameWrapper from './components/GameWrapper'
 import DragonTiger from './games/DragonTiger'
 import PokerGame from './games/PokerGame'
 import TowerGame from './games/TowerGame'
@@ -82,45 +83,45 @@ export default function App() {
         <Route path="live-casino" element={<LiveCasino />} />
         <Route path="live-casino/return" element={<LiveCasino />} />
         <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="games/aviator" element={<ProtectedRoute><AviatorGame /></ProtectedRoute>} />
-        <Route path="games/crash-rocket" element={<ProtectedRoute><CrashRocket /></ProtectedRoute>} />
-        <Route path="games/color-prediction" element={<ProtectedRoute><ColorPrediction /></ProtectedRoute>} />
-        <Route path="games/roulette" element={<ProtectedRoute><RouletteGame /></ProtectedRoute>} />
-        <Route path="games/blackjack" element={<ProtectedRoute><BlackjackGame /></ProtectedRoute>} />
-        <Route path="games/baccarat" element={<ProtectedRoute><BaccaratGame /></ProtectedRoute>} />
-        <Route path="games/teen-patti" element={<ProtectedRoute><TeenPattiGame /></ProtectedRoute>} />
-        <Route path="games/andar-bahar" element={<ProtectedRoute><AndarBahar /></ProtectedRoute>} />
-        <Route path="games/poker" element={<ProtectedRoute><PokerGame /></ProtectedRoute>} />
-        <Route path="games/slots" element={<ProtectedRoute><SlotMachine /></ProtectedRoute>} />
-        <Route path="games/dragon-tiger" element={<ProtectedRoute><DragonTiger /></ProtectedRoute>} />
-        <Route path="games/sic-bo" element={<ProtectedRoute><SicBoGame /></ProtectedRoute>} />
-        <Route path="games/dice" element={<ProtectedRoute><DiceGame /></ProtectedRoute>} />
-        <Route path="games/lucky-wheel" element={<ProtectedRoute><LuckyWheel /></ProtectedRoute>} />
-        <Route path="games/mines" element={<ProtectedRoute><MinesGame /></ProtectedRoute>} />
-        <Route path="games/plinko" element={<ProtectedRoute><PlinkoGame /></ProtectedRoute>} />
-        <Route path="games/chicken-road" element={<ProtectedRoute><ChickenRoad /></ProtectedRoute>} />
-        <Route path="games/tower" element={<ProtectedRoute><TowerGame /></ProtectedRoute>} />
-        <Route path="games/hi-lo" element={<ProtectedRoute><HiLoGame /></ProtectedRoute>} />
-        <Route path="games/spin-win" element={<ProtectedRoute><SpinWin /></ProtectedRoute>} />
-        <Route path="games/keno" element={<ProtectedRoute><KenoGame /></ProtectedRoute>} />
-        <Route path="games/coin-flip" element={<ProtectedRoute><CoinFlip /></ProtectedRoute>} />
-        <Route path="games/number-guess" element={<ProtectedRoute><NumberGuess /></ProtectedRoute>} />
-        <Route path="games/crash-ball" element={<ProtectedRoute><CrashBall /></ProtectedRoute>} />
-        <Route path="games/wheel-fortune" element={<ProtectedRoute><WheelOfFortune /></ProtectedRoute>} />
-        <Route path="games/scratch-card" element={<ProtectedRoute><ScratchCard /></ProtectedRoute>} />
-        <Route path="games/rps" element={<ProtectedRoute><RockPaperScissors /></ProtectedRoute>} />
-        <Route path="games/limbo" element={<ProtectedRoute><LimboGame /></ProtectedRoute>} />
-        <Route path="games/video-poker" element={<ProtectedRoute><VideoPoker /></ProtectedRoute>} />
-        <Route path="games/hilo-card" element={<ProtectedRoute><HiloCard /></ProtectedRoute>} />
-        <Route path="games/ball-drop" element={<ProtectedRoute><BallDrop /></ProtectedRoute>} />
-        <Route path="games/hot-cold" element={<ProtectedRoute><HotCold /></ProtectedRoute>} />
-        <Route path="games/lucky-7s" element={<ProtectedRoute><Lucky7s /></ProtectedRoute>} />
-        <Route path="games/war" element={<ProtectedRoute><WarGame /></ProtectedRoute>} />
-        <Route path="games/blackjack-switch" element={<ProtectedRoute><BlackjackSwitch /></ProtectedRoute>} />
-        <Route path="games/dice-battle" element={<ProtectedRoute><DiceBattle /></ProtectedRoute>} />
-        <Route path="games/three-card-poker" element={<ProtectedRoute><ThreeCardPoker /></ProtectedRoute>} />
-        <Route path="games/mini-baccarat" element={<ProtectedRoute><MiniBaccarat /></ProtectedRoute>} />
-        <Route path="games/penalty" element={<ProtectedRoute><PenaltyShootout /></ProtectedRoute>} />
+        <Route path="games/aviator" element={<ProtectedRoute><GameWrapper><AviatorGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/crash-rocket" element={<ProtectedRoute><GameWrapper><CrashRocket /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/color-prediction" element={<ProtectedRoute><GameWrapper><ColorPrediction /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/roulette" element={<ProtectedRoute><GameWrapper><RouletteGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/blackjack" element={<ProtectedRoute><GameWrapper><BlackjackGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/baccarat" element={<ProtectedRoute><GameWrapper><BaccaratGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/teen-patti" element={<ProtectedRoute><GameWrapper><TeenPattiGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/andar-bahar" element={<ProtectedRoute><GameWrapper><AndarBahar /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/poker" element={<ProtectedRoute><GameWrapper><PokerGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/slots" element={<ProtectedRoute><GameWrapper><SlotMachine /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/dragon-tiger" element={<ProtectedRoute><GameWrapper><DragonTiger /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/sic-bo" element={<ProtectedRoute><GameWrapper><SicBoGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/dice" element={<ProtectedRoute><GameWrapper><DiceGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/lucky-wheel" element={<ProtectedRoute><GameWrapper><LuckyWheel /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/mines" element={<ProtectedRoute><GameWrapper><MinesGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/plinko" element={<ProtectedRoute><GameWrapper><PlinkoGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/chicken-road" element={<ProtectedRoute><GameWrapper><ChickenRoad /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/tower" element={<ProtectedRoute><GameWrapper><TowerGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/hi-lo" element={<ProtectedRoute><GameWrapper><HiLoGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/spin-win" element={<ProtectedRoute><GameWrapper><SpinWin /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/keno" element={<ProtectedRoute><GameWrapper><KenoGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/coin-flip" element={<ProtectedRoute><GameWrapper><CoinFlip /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/number-guess" element={<ProtectedRoute><GameWrapper><NumberGuess /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/crash-ball" element={<ProtectedRoute><GameWrapper><CrashBall /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/wheel-fortune" element={<ProtectedRoute><GameWrapper><WheelOfFortune /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/scratch-card" element={<ProtectedRoute><GameWrapper><ScratchCard /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/rps" element={<ProtectedRoute><GameWrapper><RockPaperScissors /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/limbo" element={<ProtectedRoute><GameWrapper><LimboGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/video-poker" element={<ProtectedRoute><GameWrapper><VideoPoker /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/hilo-card" element={<ProtectedRoute><GameWrapper><HiloCard /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/ball-drop" element={<ProtectedRoute><GameWrapper><BallDrop /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/hot-cold" element={<ProtectedRoute><GameWrapper><HotCold /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/lucky-7s" element={<ProtectedRoute><GameWrapper><Lucky7s /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/war" element={<ProtectedRoute><GameWrapper><WarGame /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/blackjack-switch" element={<ProtectedRoute><GameWrapper><BlackjackSwitch /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/dice-battle" element={<ProtectedRoute><GameWrapper><DiceBattle /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/three-card-poker" element={<ProtectedRoute><GameWrapper><ThreeCardPoker /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/mini-baccarat" element={<ProtectedRoute><GameWrapper><MiniBaccarat /></GameWrapper></ProtectedRoute>} />
+        <Route path="games/penalty" element={<ProtectedRoute><GameWrapper><PenaltyShootout /></GameWrapper></ProtectedRoute>} />
       </Route>
     </Routes>
     <WhatsAppButton />
