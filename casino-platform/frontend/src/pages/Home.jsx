@@ -178,34 +178,6 @@ export default function Home() {
           {FEATURED.map((g, i) => <FeaturedCard key={i} game={g} />)}
         </div>
       </section>
-
-      {/* Extra Games */}
-      <section style={{ marginBottom: '20px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '10px' }}>
-          {EXTRA_GAMES.map((g, i) => (
-            <Link key={i} to={g.path} style={{ textDecoration: 'none' }}>
-              <div style={{
-                aspectRatio: '16/9',
-                background: `linear-gradient(135deg,${g.color}22,#12121a)`,
-                borderRadius: '10px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                transition: 'transform 0.2s',
-              }}
-              onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-              onMouseLeave={e => e.currentTarget.style.transform = 'none'}
-              >
-                <div style={{ fontSize: 'clamp(22px,5vw,32px)', marginBottom: '6px' }}>{g.icon}</div>
-                <div style={{ fontSize: 'clamp(10px,2vw,12px)', fontWeight: '700', color: '#ccc' }}>{g.name}</div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
       {/* Live Casino Games rows */}
       {rows.map((row, idx) => (
         <section key={idx} style={{ marginBottom: '20px' }}>
@@ -248,6 +220,30 @@ export default function Home() {
         </section>
       ))}
 
+      {/* Remaining Platform Games */}
+      <section style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: '8px' }}>
+          <span style={{ background: '#c9a22718', border: '1px solid #c9a22744', borderRadius: '20px', padding: '4px 14px', color: '#c9a227', fontSize: '12px', fontWeight: '700' }}>
+            🎮 More Games
+          </span>
+        </div>
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none' }}>
+          {EXTRA_GAMES.map((g, i) => (
+            <Link key={i} to={g.path} style={{ textDecoration: 'none', flexShrink: 0 }}>
+              <div style={{ width: '150px', background: '#1a1a28', borderRadius: '10px', overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.2s' }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+              >
+                <div style={{ height: '90px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '36px', background: g.color + '22' }}>
+                  {g.icon}
+                </div>
+                <div style={{ padding: '5px 7px', fontSize: '10px', color: '#bbb', fontWeight: '600', lineHeight: 1.3 }}>{g.name}</div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* Hero for non-logged in */}
       {!user && (
         <div style={{ textAlign: 'center', padding: '32px 16px', background: 'rgba(201,162,39,0.05)', borderRadius: '14px', marginTop: '16px' }}>
@@ -265,4 +261,4 @@ export default function Home() {
     </div>
   )
 }
-//v81
+//v82
