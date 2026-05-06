@@ -378,9 +378,7 @@ export default function Dashboard() {
             ) : (
               <>
                 
-                {selectedQR !== null && qrCodes[selectedQR] && (() => {
-                  const qr = qrCodes[selectedQR]
-                  return (
+                {selectedQR !== null && qrCodes[selectedQR] && (()=>{const qr=qrCodes[selectedQR];return(
                     <div style={{ textAlign: 'center' }}>
                       <div style={{ display: 'inline-block', padding: '12px', background: 'white', borderRadius: '10px', border: '3px solid var(--gold)', boxShadow: '0 0 20px rgba(201,162,39,0.25)', marginBottom: '10px' }}>
                         <img key={qr.qrUrl} src={qr.qrUrl} alt="QR" width={185} height={185} style={{ display: 'block' }} />
@@ -430,8 +428,7 @@ export default function Dashboard() {
                         <div style={{ color: 'var(--text-muted)', fontSize: '11px', lineHeight: 1.5, marginTop: '8px', textAlign: 'center' }}>Coins credited within 30 minutes after verification.</div>
                       </div>
                     </div>
-                  )
-                })()}
+                )})()}
               </>
             )}
           </div>
@@ -509,3 +506,4 @@ export default function Dashboard() {
     </div>
   )
 }
+//v102
