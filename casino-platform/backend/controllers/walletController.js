@@ -171,8 +171,7 @@ export const submitDepositRequest = async (req, res) => {
     if (!amount || amount < 100) return res.status(400).json({ message: 'Minimum deposit ₹100' })
     if (!utrId || !utrId.trim()) return res.status(400).json({ message: 'UTR/Transaction ID required' })
 
-    const { WalletTransaction } = await import('../models/WalletTransaction.js')
-    const { User } = await import('../models/User.js')
+
     const user = await User.findById(userId)
 
     // Save deposit request
