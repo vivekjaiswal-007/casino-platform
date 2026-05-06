@@ -63,6 +63,72 @@ function FeaturedCard({ game }) {
 
 
 
+
+function CricketBanner({ onPlay, launching }) {
+  const LUCKY = { game_uid: '7004', name: 'LuckSportGaming' }
+  
+  return (
+    <section style={{ marginBottom: '20px' }}>
+      <div style={{
+        position: 'relative',
+        width: '100%',
+        aspectRatio: '3951/1193',
+        borderRadius: '14px',
+        overflow: 'hidden',
+        background: 'linear-gradient(135deg, #0a1628 0%, #1a2f5e 30%, #0d3d1a 70%, #0a1628 100%)',
+        minHeight: '120px',
+      }}>
+        {/* Background image - replace src with your image URL */}
+        <img
+          src="/banner-cricket.jpg"
+          alt="Cricket Banner"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          onError={e => e.target.style.display = 'none'}
+        />
+
+        {/* Overlay */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)' }} />
+
+        {/* Content */}
+        <div style={{ position: 'relative', zIndex: 2, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 'clamp(16px,4vw,48px)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ff4444', animation: 'pulse 1.4s infinite' }} />
+            <span style={{ fontSize: 'clamp(9px,1.5vw,13px)', color: '#ff4444', fontWeight: '800', letterSpacing: '2px' }}>LIVE NOW</span>
+          </div>
+          <h2 style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(16px,4vw,42px)', color: 'white', marginBottom: 'clamp(4px,1vw,12px)', lineHeight: 1.2, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
+            🏏 Live Cricket<br/>
+            <span style={{ color: '#c9a227' }}>Betting</span>
+          </h2>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(9px,1.8vw,16px)', marginBottom: 'clamp(10px,2vw,24px)' }}>
+            IPL • T20 • PSL • Real Money
+          </p>
+          <button
+            onClick={() => onPlay(LUCKY)}
+            disabled={launching === '7004'}
+            style={{
+              alignSelf: 'flex-start',
+              padding: 'clamp(8px,1.5vw,16px) clamp(16px,3vw,36px)',
+              background: launching === '7004' ? '#555' : 'linear-gradient(135deg,#c9a227,#f0c040)',
+              border: 'none',
+              borderRadius: 'clamp(6px,1vw,10px)',
+              color: '#0a0800',
+              fontWeight: '800',
+              fontSize: 'clamp(11px,2vw,18px)',
+              cursor: launching === '7004' ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s',
+              boxShadow: '0 4px 20px rgba(201,162,39,0.4)',
+            }}
+            onMouseEnter={e => { if(launching !== '7004') e.currentTarget.style.transform = 'translateY(-2px)' }}
+            onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+          >
+            {launching === '7004' ? '⏳ Loading...' : '🏏 Play Cricket Now'}
+          </button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function LuckySportEmbed() {
   const [url, setUrl] = React.useState(null)
   const [loading, setLoading] = React.useState(true)
@@ -218,6 +284,9 @@ export default function Home() {
         </div>
       )}
 
+      {/* Cricket Banner */}
+      <CricketBanner onPlay={launchGame} launching={launching} />
+
       {/* LuckySport Live Cricket Embed */}
       {user && <LuckySportEmbed />}
 
@@ -310,4 +379,4 @@ export default function Home() {
     </div>
   )
 }
-//v86
+//v87
