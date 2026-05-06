@@ -100,21 +100,7 @@ export default function Sidebar({ className, sidebarOpen }) {
 
   return (
     <aside className={className} style={{ overflowY: 'auto', overflowX: 'hidden' }}>
-      {/* All Games */}
-        <div style={{
-          display: 'flex', alignItems: 'center',
-          gap: '10px',
-          padding: showLabels ? '11px 16px' : '11px',
-          justifyContent: showLabels ? 'flex-start' : 'center',
-          margin: '8px 6px 4px',
-          borderRadius: '9px',
-          transition: 'all 0.2s',
-          textDecoration: 'none',
-        }}>
-          <span style={{ fontSize: '17px', minWidth: '20px', textAlign: 'center', flexShrink: 0 }}>🎮</span>
-          {showLabels && <span style={{ fontSize: '13px', fontWeight: '600', whiteSpace: 'nowrap' }}>All Games</span>}
-        </div>
-      </Link>
+
 
       {/* Live Casino — SoftAPI */}
       <Link to="/live-casino" style={{ display: 'block', textDecoration: 'none' }}>
