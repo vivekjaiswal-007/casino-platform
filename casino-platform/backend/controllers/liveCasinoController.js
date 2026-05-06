@@ -326,6 +326,7 @@ export const launchGame = async (req, res) => {
       .catch(err => { throw new Error(`API unreachable: ${err.message}`) })
 
     const apiData = await apiResp.json()
+    console.log('SoftAPI response:', JSON.stringify(apiData))
 
     if (apiData.code !== 0) {
       return res.status(400).json({ success: false, message: apiData.msg || 'Launch failed', code: apiData.code })
