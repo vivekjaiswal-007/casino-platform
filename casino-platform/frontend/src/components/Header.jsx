@@ -38,19 +38,7 @@ export default function Header({ onMobileMenuClick, isMobile }) {
 
         {/* Logo */}
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-          <div style={{
-            width: '30px', height: '30px',
-            background: 'linear-gradient(135deg,#c9a227,#f0c84a)',
-            borderRadius: '7px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '15px', fontWeight: '900', color: '#0a0a0f', flexShrink: 0
-          }}>♠</div>
-          {!isMobile && (
-            <span style={{
-              fontFamily: 'Cinzel,serif', fontSize: '17px', fontWeight: '700',
-              background: 'linear-gradient(135deg,#c9a227,#f0c84a)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'
-            }}><img src="https://res.cloudinary.com/dnzfce2wa/image/upload/v1778083251/download_ehcf4o.png" alt="Logo" style={{height:"32px",marginRight:"8px",verticalAlign:"middle"}} />New Mahadev Gaming</span>
-          )}
+          <img src="https://res.cloudinary.com/dnzfce2wa/image/upload/v1778083251/download_ehcf4o.png" alt="New Mahadev Gaming" style={{height:"34px",objectFit:"contain"}} />
         </Link>
       </div>
 
@@ -136,3 +124,4 @@ export default function Header({ onMobileMenuClick, isMobile }) {
     </header>
   )
 }
+//v98
