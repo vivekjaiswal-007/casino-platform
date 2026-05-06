@@ -12,6 +12,18 @@ const FEATURED = [
   { name: 'Dragon Tiger',     path: '/games/dragon-tiger',     icon: '🐉', color: '#ff4444' },
 ]
 
+const EXTRA_GAMES = [
+  { name: 'Teen Patti',   path: '/games/teen-patti',   icon: '♠️', color: '#c9a227' },
+  { name: 'Roulette',     path: '/games/roulette',     icon: '🎡', color: '#00d084' },
+  { name: 'Blackjack',    path: '/games/blackjack',    icon: '🃏', color: '#4488ff' },
+  { name: 'Andar Bahar',  path: '/games/andar-bahar',  icon: '🎯', color: '#ff9900' },
+  { name: 'Plinko',       path: '/games/plinko',       icon: '⚡', color: '#ff4488' },
+  { name: 'Hi-Lo',        path: '/games/hi-lo',        icon: '📈', color: '#00d084' },
+  { name: 'Lucky Wheel',  path: '/games/lucky-wheel',  icon: '🎡', color: '#c9a227' },
+  { name: 'Sic Bo',       path: '/games/sic-bo',       icon: '🎲', color: '#ff9900' },
+  { name: 'Poker',        path: '/games/poker',        icon: '♣️', color: '#9944ff' },
+]
+
 const ROW_TAGS = [
   { label: '🆕 New Launch',      color: '#4488ff' },
   { label: '🔥 Trending Games',  color: '#ff4444' },
@@ -167,6 +179,33 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Extra Games */}
+      <section style={{ marginBottom: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '10px' }}>
+          {EXTRA_GAMES.map((g, i) => (
+            <Link key={i} to={g.path} style={{ textDecoration: 'none' }}>
+              <div style={{
+                aspectRatio: '16/9',
+                background: `linear-gradient(135deg,${g.color}22,#12121a)`,
+                borderRadius: '10px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'transform 0.2s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+              >
+                <div style={{ fontSize: 'clamp(22px,5vw,32px)', marginBottom: '6px' }}>{g.icon}</div>
+                <div style={{ fontSize: 'clamp(10px,2vw,12px)', fontWeight: '700', color: '#ccc' }}>{g.name}</div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* Live Casino Games rows */}
       {rows.map((row, idx) => (
         <section key={idx} style={{ marginBottom: '20px' }}>
@@ -226,4 +265,4 @@ export default function Home() {
     </div>
   )
 }
-//v80
+//v81
