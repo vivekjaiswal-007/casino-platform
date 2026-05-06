@@ -4,11 +4,11 @@ import { useStore, api } from '../store/useStore'
 import toast from 'react-hot-toast'
 
 const FEATURED = [
-  { name: 'Aviator',          path: '/games/aviator',          icon: '✈️', color: '#ff4444' },
-  { name: 'Crash Rocket',     path: '/games/crash-rocket',     icon: '🚀', color: '#9944ff' },
-  { name: 'Color Prediction', path: '/games/color-prediction', icon: '🎨', color: '#ff4488' },
-  { name: 'Chicken Road',     path: '/games/chicken-road',     icon: '🐔', color: '#ff9900' },
-  { name: 'Mines',            path: '/games/mines',            icon: '💎', color: '#00d084' },
+  { name: 'Aviator',          path: '/games/aviator',          icon: '✈️', color: '#ff4444', video: 'https://res.cloudinary.com/dnzfce2wa/video/upload/v1778066670/aviator_nw6vp5.mp4' },
+  { name: 'Crash Rocket',     path: '/games/crash-rocket',     icon: '🚀', color: '#9944ff', video: 'https://res.cloudinary.com/dnzfce2wa/video/upload/v1778066670/Mobile_run_o48kbe.mp4' },
+  { name: 'Color Prediction', path: '/games/color-prediction', icon: '🎨', color: '#ff4488', video: 'https://res.cloudinary.com/dnzfce2wa/video/upload/v1778066669/colour_prediction_nfxrqp.mp4' },
+  { name: 'Chicken Road',     path: '/games/chicken-road',     icon: '🐔', color: '#ff9900', video: 'https://res.cloudinary.com/dnzfce2wa/video/upload/v1778066669/chicken_road_i61thh.mp4' },
+  { name: 'Mines',            path: '/games/mines',            icon: '💎', color: '#00d084', video: 'https://res.cloudinary.com/dnzfce2wa/video/upload/v1778066670/mines_xsbshb.mp4' },
   { name: 'Dragon Tiger',     path: '/games/dragon-tiger',     icon: '🐉', color: '#ff4444' },
 ]
 
@@ -44,18 +44,33 @@ function FeaturedCard({ game }) {
         aspectRatio: '16/9',
         background: `linear-gradient(135deg,${game.color}33,#12121a)`,
         borderRadius: '12px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
+        overflow: 'hidden',
         cursor: 'pointer',
         transition: 'transform 0.2s',
+        position: 'relative',
       }}
       onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-3px)'}
       onMouseLeave={e => e.currentTarget.style.transform = 'none'}
       >
-        <div style={{ fontSize: 'clamp(30px,6vw,42px)', marginBottom: '8px' }}>{game.icon}</div>
-        <div style={{ fontSize: 'clamp(11px,2.5vw,14px)', fontWeight: '700', color: '#ddd' }}>{game.name}</div>
+        {game.video ? (
+          <video
+            src={game.video}
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+        ) : (
+          <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ fontSize: 'clamp(30px,6vw,42px)', marginBottom: '8px' }}>{game.icon}</div>
+            <div style={{ fontSize: 'clamp(11px,2.5vw,14px)', fontWeight: '700', color: '#ddd' }}>{game.name}</div>
+          </div>
+        )}
+        {/* Game name overlay */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '8px 12px', background: 'linear-gradient(transparent, rgba(0,0,0,0.8))', fontSize: 'clamp(11px,2vw,14px)', fontWeight: '700', color: 'white' }}>
+          {game.icon} {game.name}
+        </div>
       </div>
     </Link>
   )
@@ -379,3 +394,4 @@ export default function Home() {
     </div>
   )
 }
+//v91
