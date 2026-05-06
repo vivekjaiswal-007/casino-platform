@@ -166,6 +166,9 @@ export const LIVE_GAMES = [
   { game_uid: '11538', name: 'Trio', category: 'table', hot: false, new: false , img: 'https://igamingapis.com/img/11538.png' },
   { game_uid: '11409', name: 'Turbo Auto Roulette', category: 'table', hot: true, new: false , img: 'https://igamingapis.com/img/11409.png' },
 
+  // ── LuckySport ───────────────────────────────────────────────────────────
+  { game_uid: '7004', name: 'LuckSportGaming', category: 'lucky', hot: true, new: true, img: 'https://imagedelivery.net/nVyft9zNw2I0pNVtrnC1zA/7004/public' },
+
   // ── Evolution Live (Asia) ────────────────────────────────────────────────
   { game_uid: '7605', name: 'American Roulette',                    category: 'evolution', hot: true,  new: false , img: 'https://imagedelivery.net/nVyft9zNw2I0pNVtrnC1zA/7605/public' },
   { game_uid: '8190', name: 'Auto Lightning Roulette',              category: 'evolution', hot: true,  new: false , img: 'https://imagedelivery.net/nVyft9zNw2I0pNVtrnC1zA/8190/public' },
