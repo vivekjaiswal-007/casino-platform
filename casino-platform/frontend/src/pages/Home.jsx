@@ -47,6 +47,55 @@ function FeaturedCard({ game }) {
   )
 }
 
+
+function AutoScrollRow({ children, count }) {
+  const rowRef = React.useRef(null)
+  const animRef = React.useRef(null)
+  const pausedRef = React.useRef(false)
+  const posRef = React.useRef(0)
+
+  React.useEffect(function() {
+    const row = rowRef.current
+    if (!row) return
+    const CARD_W = 158
+    const totalW = count * CARD_W
+
+    function animate() {
+      if (!pausedRef.current) {
+        posRef.current += 0.5
+        if (posRef.current >= totalW) posRef.current = 0
+        if (row) row.scrollLeft = posRef.current
+      }
+      animRef.current = requestAnimationFrame(animate)
+    }
+    animRef.current = requestAnimationFrame(animate)
+    return function() { cancelAnimationFrame(animRef.current) }
+  }, [count])
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <button onClick={function() { pausedRef.current = true; posRef.current = Math.max(0, posRef.current - 300); if(rowRef.current) rowRef.current.scrollLeft = posRef.current; setTimeout(function(){ pausedRef.current = false }, 1500) }}
+        style={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 10, width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        ‹
+      </button>
+      <div ref={rowRef}
+        style={{ display: 'flex', gap: '8px', overflowX: 'scroll', paddingBottom: '4px', paddingLeft: '32px', paddingRight: '32px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        onMouseEnter={function() { pausedRef.current = true }}
+        onMouseLeave={function() { pausedRef.current = false }}
+        onTouchStart={function() { pausedRef.current = true }}
+        onTouchEnd={function() { setTimeout(function(){ pausedRef.current = false }, 2000) }}
+      >
+        {children}
+        {children}
+      </div>
+      <button onClick={function() { pausedRef.current = true; posRef.current += 300; if(rowRef.current) rowRef.current.scrollLeft = posRef.current; setTimeout(function(){ pausedRef.current = false }, 1500) }}
+        style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 10, width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        ›
+      </button>
+    </div>
+  )
+}
+
 export default function Home() {
   const { user, balance } = useStore()
   const navigate = useNavigate()
@@ -134,29 +183,29 @@ export default function Home() {
               {(ROW_TAGS[idx] || { label: `🎮 Games ${idx+1}` }).label}
             </span>
           </div>
-          <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none' }}>
+          <AutoScrollRow count={row.length}>
             {row.map((g, i) => {
               const busy = launching === g.game_uid
               return (
                 <div key={i} onClick={() => !busy && launchGame(g)}
-                  style={{ flexShrink: 0, width: '110px', background: '#1a1a28', borderRadius: '10px', overflow: 'hidden', cursor: busy ? 'wait' : 'pointer', transition: 'transform 0.2s', opacity: busy ? 0.7 : 1 }}
+                  style={{ flexShrink: 0, width: '150px', background: '#1a1a28', borderRadius: '10px', overflow: 'hidden', cursor: busy ? 'wait' : 'pointer', transition: 'transform 0.2s', opacity: busy ? 0.7 : 1 }}
                   onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                   onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                 >
                   {g.img ? (
-                    <img src={g.img} alt={g.name} style={{ width: '100%', height: '65px', objectFit: 'cover', display: 'block' }}
+                    <img src={g.img} alt={g.name} style={{ width: '100%', height: '90px', objectFit: 'cover', display: 'block' }}
                       onError={e => { e.target.style.display='none' }}
                     />
                   ) : (
-                    <div style={{ height: '65px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '26px', background: '#222' }}>🎰</div>
+                    <div style={{ height: '90px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '26px', background: '#222' }}>🎰</div>
                   )}
-                  <div style={{ padding: '5px 7px', fontSize: '9px', color: '#bbb', fontWeight: '600', lineHeight: 1.3 }}>
+                  <div style={{ padding: '5px 7px', fontSize: '10px', color: '#bbb', fontWeight: '600', lineHeight: 1.3 }}>
                     {busy ? '⏳ Loading...' : g.name}
                   </div>
                 </div>
               )
             })}
-          </div>
+          </AutoScrollRow>
         </section>
       ))}
 
@@ -177,3 +226,4 @@ export default function Home() {
     </div>
   )
 }
+//v80
