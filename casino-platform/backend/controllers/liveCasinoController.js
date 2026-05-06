@@ -354,17 +354,18 @@ export const gameCallback = async (req, res) => {
     const bet = parseFloat(bet_amount) || 0
     const win = parseFloat(win_amount) || 0
 
-    // Skip empty callbacks
-    if (bet === 0 && win === 0) {
-      return res.json({ credit_amount: 0, timestamp: Date.now() })
-    }
-
-    // Find user
+    // Find user first
     let user = await User.findOne({ softagiId: Number(member_account) })
     if (!user) user = await User.findById(member_account).catch(() => null)
     if (!user) {
       console.error('User not found:', member_account)
       return res.json({ credit_amount: 0, timestamp: Date.now() })
+    }
+
+    // Empty callback - return actual balance (NOT 0)
+    if (bet === 0 && win === 0) {
+      console.log('Empty CB: returning balance=' + user.balance)
+      return res.json({ credit_amount: user.balance, timestamp: Date.now() })
     }
 
     // Skip duplicate rounds
@@ -426,4 +427,4 @@ export const getLiveBalance = async (req, res) => {
     res.status(500).json({ success: false, message: err.message })
   }
 }
-//v94
+//v95
