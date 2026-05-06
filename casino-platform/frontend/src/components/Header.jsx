@@ -38,7 +38,7 @@ export default function Header({ onMobileMenuClick, isMobile }) {
 
         {/* Logo */}
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-          <img src="https://res.cloudinary.com/dnzfce2wa/image/upload/v1778083251/download_ehcf4o.png" alt="New Mahadev Gaming" style={{height:"34px",objectFit:"contain"}} />
+          <img src="https://res.cloudinary.com/dnzfce2wa/image/upload/v1778083251/download_ehcf4o.png" alt="New Mahadev Gaming" style={{height:"42px",objectFit:"contain"}} />
         </Link>
       </div>
 
@@ -124,4 +124,4 @@ export default function Header({ onMobileMenuClick, isMobile }) {
     </header>
   )
 }
-//v98
+//v99
