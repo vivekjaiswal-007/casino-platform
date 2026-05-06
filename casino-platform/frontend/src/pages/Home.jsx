@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useStore, api } from '../store/useStore'
+import toast from 'react-hot-toast'
 
 const FEATURED = [
   { name: 'Aviator',          path: '/games/aviator',          icon: '✈️', color: '#ff4444' },
@@ -46,27 +47,12 @@ function FeaturedCard({ game }) {
   )
 }
 
-function GameCard({ game, onClick }) {
-  return (
-    <div onClick={onClick} style={{ flexShrink: 0, width: '110px', background: '#1a1a28', borderRadius: '10px', overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.2s' }}
-      onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-      onMouseLeave={e => e.currentTarget.style.transform = 'none'}
-    >
-      {game.img ? (
-        <img src={game.img} alt={game.name} style={{ width: '100%', height: '65px', objectFit: 'cover', display: 'block' }}
-          onError={e => { e.target.style.display='none' }}
-        />
-      ) : (
-        <div style={{ height: '65px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '26px', background: '#222' }}>🎰</div>
-      )}
-      <div style={{ padding: '5px 7px', fontSize: '9px', color: '#bbb', fontWeight: '600', lineHeight: 1.3 }}>{game.name}</div>
-    </div>
-  )
-}
-
 export default function Home() {
-  const { user } = useStore()
+  const { user, balance } = useStore()
+  const navigate = useNavigate()
   const [liveGames, setLiveGames] = useState([])
+  const [launching, setLaunching] = useState(null)
+  const [modal, setModal] = useState(null)
 
   useEffect(function() {
     api.get('/live-casino/games')
@@ -74,16 +60,45 @@ export default function Home() {
       .catch(() => {})
   }, [])
 
+  async function launchGame(game) {
+    if (!user) { toast.error('Please login to play!'); navigate('/login'); return }
+    if (balance < 1) { toast.error('Insufficient balance!'); return }
+    setLaunching(game.game_uid)
+    try {
+      const res = await api.post('/live-casino/launch', { game_uid: game.game_uid, language: 'hi', currency_code: 'INR' })
+      if (res.data.success && res.data.gameUrl) {
+        setModal(res.data.gameUrl)
+      } else {
+        toast.error(res.data.message || 'Launch failed')
+      }
+    } catch(e) {
+      toast.error('Game launch failed')
+    }
+    setLaunching(null)
+  }
+
   // Split live games into rows of 20
   const rows = []
   for (let i = 0; i < liveGames.length; i += 20) {
     rows.push(liveGames.slice(i, i + 20))
   }
 
-  function navigate(path) { window.location.href = path }
-
   return (
     <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+
+      {/* Game iframe modal */}
+      {modal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.95)', zIndex: 9999, display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', background: '#0a0a0f', flexShrink: 0 }}>
+            <span style={{ color: '#c9a227', fontFamily: 'Cinzel,serif', fontSize: '16px' }}>🎮 Live Game</span>
+            <button onClick={() => setModal(null)}
+              style={{ padding: '8px 20px', background: 'rgba(255,68,68,0.15)', border: '1px solid rgba(255,68,68,0.4)', borderRadius: '8px', color: '#ff6666', cursor: 'pointer', fontWeight: '700' }}>
+              ✕ Exit Game
+            </button>
+          </div>
+          <iframe src={modal} style={{ flex: 1, border: 'none' }} allow="autoplay; fullscreen" title="Live Game" />
+        </div>
+      )}
 
       {/* Welcome */}
       {user && (
@@ -92,7 +107,7 @@ export default function Home() {
             <div style={{ fontSize: '12px', color: '#666' }}>Welcome back</div>
             <div style={{ fontSize: '17px', fontWeight: '700' }}>{user.username} 👑</div>
           </div>
-          <Link to="/games/aviator"><button className="btn-gold" style={{ padding: '8px 18px' }}>Play Now</button></Link>
+          <span style={{ color: '#c9a227', fontWeight: '700' }}>🪙 {balance?.toLocaleString() || 0}</span>
         </div>
       )}
 
@@ -103,10 +118,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Live Casino Games — rows with tags */}
-      {rows.length > 0 && rows.map((row, idx) => (
+      {/* Live Casino Games rows */}
+      {rows.map((row, idx) => (
         <section key={idx} style={{ marginBottom: '20px' }}>
-          {/* Row tag */}
           <div style={{ marginBottom: '8px' }}>
             <span style={{
               background: (ROW_TAGS[idx] || ROW_TAGS[0]).color + '18',
@@ -120,11 +134,28 @@ export default function Home() {
               {(ROW_TAGS[idx] || { label: `🎮 Games ${idx+1}` }).label}
             </span>
           </div>
-          {/* Horizontal scroll row */}
           <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none' }}>
-            {row.map((g, i) => (
-              <GameCard key={i} game={g} onClick={() => navigate('/live-casino')} />
-            ))}
+            {row.map((g, i) => {
+              const busy = launching === g.game_uid
+              return (
+                <div key={i} onClick={() => !busy && launchGame(g)}
+                  style={{ flexShrink: 0, width: '110px', background: '#1a1a28', borderRadius: '10px', overflow: 'hidden', cursor: busy ? 'wait' : 'pointer', transition: 'transform 0.2s', opacity: busy ? 0.7 : 1 }}
+                  onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                  onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+                >
+                  {g.img ? (
+                    <img src={g.img} alt={g.name} style={{ width: '100%', height: '65px', objectFit: 'cover', display: 'block' }}
+                      onError={e => { e.target.style.display='none' }}
+                    />
+                  ) : (
+                    <div style={{ height: '65px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '26px', background: '#222' }}>🎰</div>
+                  )}
+                  <div style={{ padding: '5px 7px', fontSize: '9px', color: '#bbb', fontWeight: '600', lineHeight: 1.3 }}>
+                    {busy ? '⏳ Loading...' : g.name}
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </section>
       ))}
