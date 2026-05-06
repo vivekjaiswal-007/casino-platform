@@ -41,7 +41,7 @@ export default function Login() {
       <div style={{ width: '100%', maxWidth: '400px' }}>
         <div style={{ textAlign: 'center', marginBottom: '22px' }}>
           <div style={{ width: '52px', height: '52px', background: 'linear-gradient(135deg,#c9a227,#f0c84a)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '26px', margin: '0 auto 10px', boxShadow: '0 6px 20px rgba(201,162,39,0.3)', color: '#0a0a0f', fontWeight: '900' }}>♠</div>
-          <h1 style={{ fontFamily: 'Cinzel,serif', fontSize: '22px', fontWeight: '700' }} className="gold-text">RoyalBet</h1>
+          <h1 style={{ fontFamily: 'Cinzel,serif', fontSize: '22px', fontWeight: '700' }} className="gold-text">New Mahadev Gaming</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '13px', marginTop: '5px' }}>Welcome back, player 🎮</p>
         </div>
 
@@ -86,7 +86,7 @@ export default function Login() {
           </p>
 
           <div style={{ marginTop: '14px', padding: '10px', background: 'rgba(201,162,39,0.05)', borderRadius: '8px', border: '1px solid rgba(201,162,39,0.1)', textAlign: 'center' }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: '11px' }}>Demo: admin@royalbet.com / admin123</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '11px' }}>Demo: admin@newmahadevgaming.com / admin123</p>
           </div>
         </div>
       </div>

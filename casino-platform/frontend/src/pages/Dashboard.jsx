@@ -35,6 +35,10 @@ export default function Dashboard() {
   const [tab, setTab] = useState('overview')
   const [loading, setLoading] = useState(true)
   const [depositAmount, setDepositAmount] = useState(500)
+  const [utrId, setUtrId] = useState('')
+  const [screenshot, setScreenshot] = useState(null)
+  const [screenshotName, setScreenshotName] = useState('')
+  const [submitLoading, setSubmitLoading] = useState(false)
   const [qrCodes, setQrCodes] = useState([])
   const [qrLoading, setQrLoading] = useState(false)
   const [selectedQR, setSelectedQR] = useState(null)
@@ -88,8 +92,8 @@ export default function Dashboard() {
       toast.success('🔄 QR generated!')
     } catch {
       const nonce = Date.now()
-      const upiString = `upi://pay?pa=royalbet@upi&pn=RoyalBet&am=${depositAmount}&cu=INR&tn=RB${nonce}`
-      setQrCodes([{ upiId: 'royalbet@upi', name: 'RoyalBet Casino', amount: depositAmount, coins: depositAmount, txnRef: `RB${nonce}`, qrUrl: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiString)}&margin=10&_nc=${nonce}` }])
+      const upiString = `upi://pay?pa=newmahadevgaming@upi&pn=New Mahadev Gaming&am=${depositAmount}&cu=INR&tn=RB${nonce}`
+      setQrCodes([{ upiId: 'newmahadevgaming@upi', name: 'New Mahadev Gaming Casino', amount: depositAmount, coins: depositAmount, txnRef: `RB${nonce}`, qrUrl: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiString)}&margin=10&_nc=${nonce}` }])
       setSelectedQR(0)
     }
     setQrLoading(false)
@@ -389,7 +393,42 @@ export default function Dashboard() {
                       )}
 
                       <div style={{ background: 'rgba(0,208,132,0.07)', border: '1px solid rgba(0,208,132,0.18)', borderRadius: '7px', padding: '9px', fontSize: '13px', fontWeight: '700', color: '#00d084', marginBottom: '8px' }}>₹{qr.amount} → 🪙 {qr.coins} coins</div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '11px', lineHeight: 1.5 }}>Send screenshot + Ref ID to admin.<br/>Coins credited within 30 mins.</div>
+                      <div style={{ marginTop: '14px' }}>
+                        {/* UTR input */}
+                        <div style={{ marginBottom: '10px' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: '600' }}>UTR / Transaction ID *</div>
+                          <input
+                            type="text"
+                            placeholder="Enter 12-digit UTR or Transaction ID"
+                            value={utrId}
+                            onChange={e => setUtrId(e.target.value)}
+                            style={{ width: '100%', padding: '10px 12px', background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: '8px', color: 'white', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
+                          />
+                        </div>
+                        {/* Screenshot upload */}
+                        <div style={{ marginBottom: '12px' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: '600' }}>Payment Screenshot *</div>
+                          <label style={{ display: 'block', padding: '12px', background: 'var(--bg-hover)', border: '2px dashed var(--border)', borderRadius: '8px', cursor: 'pointer', textAlign: 'center' }}>
+                            <input type="file" accept="image/*" style={{ display: 'none' }}
+                              onChange={e => {
+                                const f = e.target.files[0]
+                                if (f) { setScreenshot(f); setScreenshotName(f.name) }
+                              }}
+                            />
+                            {screenshotName ? (
+                              <div style={{ color: '#00d084', fontSize: '12px' }}>✅ {screenshotName}</div>
+                            ) : (
+                              <div style={{ color: '#555', fontSize: '12px' }}>📷 Click to upload screenshot</div>
+                            )}
+                          </label>
+                        </div>
+                        {/* Submit button */}
+                        <button onClick={submitDeposit} disabled={submitLoading}
+                          style={{ width: '100%', padding: '12px', background: 'linear-gradient(135deg,#b88a1a,#e8c840)', border: 'none', borderRadius: '8px', color: '#050200', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>
+                          {submitLoading ? '⏳ Submitting...' : '✅ Submit Deposit Request'}
+                        </button>
+                        <div style={{ color: 'var(--text-muted)', fontSize: '11px', lineHeight: 1.5, marginTop: '8px', textAlign: 'center' }}>Coins credited within 30 minutes after verification.</div>
+                      </div>
                     </div>
                   )
                 })()}

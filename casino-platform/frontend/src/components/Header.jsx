@@ -49,7 +49,7 @@ export default function Header({ onMobileMenuClick, isMobile }) {
               fontFamily: 'Cinzel,serif', fontSize: '17px', fontWeight: '700',
               background: 'linear-gradient(135deg,#c9a227,#f0c84a)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'
-            }}>RoyalBet</span>
+            }}><img src="https://res.cloudinary.com/dnzfce2wa/image/upload/v1778083251/download_ehcf4o.png" alt="Logo" style={{height:"32px",marginRight:"8px",verticalAlign:"middle"}} />New Mahadev Gaming</span>
           )}
         </Link>
       </div>

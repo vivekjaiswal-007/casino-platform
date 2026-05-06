@@ -74,7 +74,8 @@ export default function App() {
   return (
     <>
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/terms" element={<Terms />} />
+        <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/" element={<Layout />}>
@@ -124,6 +125,7 @@ export default function App() {
         <Route path="games/penalty" element={<ProtectedRoute><GameWrapper><PenaltyShootout /></GameWrapper></ProtectedRoute>} />
       </Route>
     </Routes>
+    <Footer />
     <WhatsAppButton />
     </>
   )

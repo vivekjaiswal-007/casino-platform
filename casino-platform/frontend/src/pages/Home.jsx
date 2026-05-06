@@ -381,7 +381,7 @@ export default function Home() {
       {!user && (
         <div style={{ textAlign: 'center', padding: '32px 16px', background: 'rgba(201,162,39,0.05)', borderRadius: '14px', marginTop: '16px' }}>
           <h1 style={{ fontFamily: 'Cinzel,serif', fontSize: 'clamp(24px,5vw,40px)', marginBottom: '10px' }}>
-            <span className="gold-text">Royal Bet</span> Casino
+            <span className="gold-text">New Mahadev Gaming</span> Casino
           </h1>
           <p style={{ color: '#888', fontSize: '14px', marginBottom: '20px' }}>248+ Live Games • Instant Payouts</p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
