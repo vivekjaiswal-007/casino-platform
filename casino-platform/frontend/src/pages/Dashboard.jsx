@@ -99,6 +99,25 @@ export default function Dashboard() {
     setQrLoading(false)
   }
 
+  // ── Submit Deposit ──
+  const submitDeposit = async () => {
+    if (!utrId.trim()) return toast.error('Please enter UTR/Transaction ID')
+    if (!screenshot) return toast.error('Please upload payment screenshot')
+    setSubmitLoading(true)
+    try {
+      const formData = new FormData()
+      formData.append('amount', depositAmount)
+      formData.append('utrId', utrId.trim())
+      formData.append('screenshot', screenshot)
+      await api.post('/wallet/deposit-request', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+      toast.success('✅ Deposit request submitted! Coins credited within 30 mins.')
+      setUtrId(''); setScreenshot(null); setScreenshotName(''); setQrCodes([]); setSelectedQR(null)
+    } catch(e) {
+      toast.error(e?.response?.data?.message || 'Submission failed')
+    }
+    setSubmitLoading(false)
+  }
+
   // ── Withdraw ──
   const submitWithdraw = async () => {
     if (withdrawAmount < 100) return toast.error('Minimum withdrawal ₹100')
@@ -506,4 +525,3 @@ export default function Dashboard() {
     </div>
   )
 }
-//v103

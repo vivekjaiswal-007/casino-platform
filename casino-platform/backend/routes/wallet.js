@@ -14,6 +14,7 @@ router.post('/update', updateBalance)
 router.get('/qr', getQRCode)
 router.get('/qr-all', getAllQRCodes)
 router.post('/withdraw', requestWithdraw)
+router.post('/deposit-request', require('../controllers/walletController').submitDepositRequest)
 router.get('/withdrawals', getWithdrawRequests)
 
 export default router

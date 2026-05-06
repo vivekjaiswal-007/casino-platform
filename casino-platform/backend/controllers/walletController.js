@@ -161,3 +161,33 @@ export const getWithdrawRequests = async (req, res) => {
     res.status(500).json({ message: err.message })
   }
 }
+
+// Submit deposit request with UTR + screenshot
+export const submitDepositRequest = async (req, res) => {
+  try {
+    const { amount, utrId } = req.body
+    const userId = req.user._id
+
+    if (!amount || amount < 100) return res.status(400).json({ message: 'Minimum deposit ₹100' })
+    if (!utrId || !utrId.trim()) return res.status(400).json({ message: 'UTR/Transaction ID required' })
+
+    const { WalletTransaction } = await import('../models/WalletTransaction.js')
+    const { User } = await import('../models/User.js')
+    const user = await User.findById(userId)
+
+    // Save deposit request
+    await WalletTransaction.create({
+      userId,
+      type: 'deposit_pending',
+      amount: parseFloat(amount),
+      balanceBefore: user.balance,
+      balanceAfter: user.balance,
+      description: `Deposit request ₹${amount} | UTR: ${utrId.trim()}`,
+      withdrawStatus: 'pending'
+    })
+
+    res.json({ message: 'Deposit request submitted! Coins will be credited within 30 minutes after verification.' })
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
