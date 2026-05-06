@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react'
+import Footer from './components/Footer'
+import Terms from './pages/Terms'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useStore } from './store/useStore'
 import Layout from './components/Layout'
