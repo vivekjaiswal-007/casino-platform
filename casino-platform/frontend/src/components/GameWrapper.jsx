@@ -37,4 +37,3 @@ export default function GameWrapper({ children, gameName }) {
     </div>
   )
 }
-//v93

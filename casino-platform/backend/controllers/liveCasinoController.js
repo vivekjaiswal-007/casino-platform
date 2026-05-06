@@ -372,7 +372,8 @@ export const gameCallback = async (req, res) => {
       const existing = await Bet.findOne({ 'result.game_round': game_round, userId: user._id })
       if (existing) {
         console.log('Duplicate skipped:', game_round)
-        return res.json({ credit_amount: Math.max(0, bet - win), timestamp: Date.now() })
+        const dupUser = await User.findOne({ softagiId: Number(member_account) }).select('balance').lean()
+        return res.json({ credit_amount: dupUser ? dupUser.balance : 0, timestamp: Date.now() })
       }
     }
 
@@ -407,9 +408,9 @@ export const gameCallback = async (req, res) => {
       }).catch(e => console.log('Wallet create error:', e.message))
     }
 
-    const credit = Math.max(0, bet - win)
-    console.log('CB OK: bet=' + bet + ' win=' + win + ' net=' + net + ' balance=' + user.balance)
-    res.json({ credit_amount: credit, timestamp: Date.now() })
+    // credit_amount = user's NEW balance (as per SoftAPI documentation)
+    console.log('CB OK: bet=' + bet + ' win=' + win + ' net=' + net + ' newBalance=' + user.balance)
+    res.json({ credit_amount: user.balance, timestamp: Date.now() })
   } catch (err) {
     console.error('CB Error:', err.message)
     res.json({ credit_amount: -1, error: err.message })
@@ -425,3 +426,4 @@ export const getLiveBalance = async (req, res) => {
     res.status(500).json({ success: false, message: err.message })
   }
 }
+//v94
