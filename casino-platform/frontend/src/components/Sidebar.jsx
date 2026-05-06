@@ -101,7 +101,6 @@ export default function Sidebar({ className, sidebarOpen }) {
   return (
     <aside className={className} style={{ overflowY: 'auto', overflowX: 'hidden' }}>
       {/* All Games */}
-      <Link to="/lobby" style={{ display: 'block', textDecoration: 'none' }}>
         <div style={{
           display: 'flex', alignItems: 'center',
           gap: '10px',
@@ -109,9 +108,6 @@ export default function Sidebar({ className, sidebarOpen }) {
           justifyContent: showLabels ? 'flex-start' : 'center',
           margin: '8px 6px 4px',
           borderRadius: '9px',
-          background: location.pathname === '/lobby' ? 'rgba(201,162,39,0.14)' : 'transparent',
-          border: location.pathname === '/lobby' ? '1px solid rgba(201,162,39,0.28)' : '1px solid transparent',
-          color: location.pathname === '/lobby' ? 'var(--gold)' : 'var(--text-secondary)',
           transition: 'all 0.2s',
           textDecoration: 'none',
         }}>
