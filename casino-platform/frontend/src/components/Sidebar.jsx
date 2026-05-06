@@ -86,6 +86,36 @@ const MENU = [
       { name: 'Penalty',       path: '/games/penalty',        icon: '⚽' },
     ]
   },
+,
+  {
+    cat: 'LIVE 🔴', icon: '🎰',
+    items: [
+      { name: 'Mac88 Live',    path: '/live-casino', icon: '🎰', badge: 'LIVE' },
+      { name: 'Evolution',     path: '/live-casino', icon: '👑', badge: 'LIVE' },
+      { name: 'Dragon Tiger',  path: '/live-casino', icon: '🐉', badge: 'HOT' },
+      { name: 'Teen Patti',    path: '/live-casino', icon: '♠️', badge: 'HOT' },
+      { name: 'Andar Bahar',   path: '/live-casino', icon: '🎯', badge: 'HOT' },
+      { name: 'Bollywood',     path: '/live-casino', icon: '🎬' },
+      { name: 'Roulette Live', path: '/live-casino', icon: '🎡' },
+      { name: 'Baccarat Live', path: '/live-casino', icon: '🎴' },
+      { name: 'Blackjack Live',path: '/live-casino', icon: '🃏' },
+      { name: 'Funky Time',    path: '/live-casino', icon: '🎉', badge: 'NEW' },
+      { name: 'Lightning',     path: '/live-casino', icon: '⚡', badge: 'HOT' },
+      { name: 'Speed Baccarat',path: '/live-casino', icon: '🚀' },
+      { name: 'Aviator X',     path: '/live-casino', icon: '✈️' },
+      { name: 'Crash X',       path: '/live-casino', icon: '💥' },
+      { name: 'AK47 Teen Patti',path: '/live-casino',icon: '🔫', badge: 'HOT' },
+    ]
+  },
+  {
+    cat: 'SPORTS 🏏', icon: '🏆',
+    items: [
+      { name: 'Live Cricket',  path: '/live-casino', icon: '🏏', badge: 'LIVE' },
+      { name: 'IPL Betting',   path: '/live-casino', icon: '🏆', badge: 'HOT' },
+      { name: 'T20 Matches',   path: '/live-casino', icon: '🎯' },
+      { name: 'PSL Cricket',   path: '/live-casino', icon: '🏏' },
+    ]
+  }
 ]
 
 export default function Sidebar({ className, sidebarOpen }) {
@@ -219,3 +249,4 @@ export default function Sidebar({ className, sidebarOpen }) {
     </aside>
   )
 }
+//v92
