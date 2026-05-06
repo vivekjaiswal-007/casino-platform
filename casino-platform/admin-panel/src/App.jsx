@@ -12,7 +12,7 @@ import CreateAccount from './pages/CreateAccount'
 import GameControl from './pages/GameControl'
 import AdminLayout from './components/AdminLayout'
 
-const api = axios.create({ baseURL: '/api' })
+const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || '/api' })
 api.interceptors.request.use(c => { const t=localStorage.getItem('admin_token'); if(t) c.headers.Authorization=`Bearer ${t}`; return c })
 api.interceptors.response.use(r=>r, err => {
   if (err.response?.status===401) { const m=err.response?.data?.message||''; if(m.includes('authenticated')||m.includes('expired')){localStorage.removeItem('admin_token');localStorage.removeItem('admin_user');window.location.href='/login'} }
