@@ -227,26 +227,6 @@ export default function Home() {
           {FEATURED.map((g, i) => <FeaturedCard key={i} game={g} />)}
         </div>
       </section>
-      {/* LuckySport Banner */}
-      <section style={{ marginBottom: '16px' }}>
-        <div onClick={() => launchGame(LUCKY_SPORT)}
-          style={{ background: 'linear-gradient(135deg,#c9a22733,#9944ff22)', borderRadius: '12px', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', transition: 'transform 0.2s' }}
-          onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={e => e.currentTarget.style.transform = 'none'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: '32px' }}>🏆</span>
-            <div>
-              <div style={{ fontWeight: '800', fontSize: '16px', color: '#c9a227' }}>LuckySport Gaming</div>
-              <div style={{ fontSize: '11px', color: '#888' }}>Live Sports • Real Money</div>
-            </div>
-          </div>
-          <div style={{ background: 'linear-gradient(135deg,#8a6a1a,#c9a227)', borderRadius: '8px', padding: '8px 16px', color: '#0a0800', fontWeight: '800', fontSize: '12px' }}>
-            {launching === '7004' ? '⏳...' : 'Play Now →'}
-          </div>
-        </div>
-      </section>
-
       {/* Live Casino Games rows */}
       {rows.map((row, idx) => (
         <section key={idx} style={{ marginBottom: '20px' }}>
@@ -330,4 +310,4 @@ export default function Home() {
     </div>
   )
 }
-//v85
+//v86
