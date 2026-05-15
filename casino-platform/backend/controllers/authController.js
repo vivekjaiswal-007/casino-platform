@@ -45,9 +45,9 @@ export const signup = async (req, res) => {
     const user = await User.create(userData)
 
     await WalletTransaction.create({
-      userId: user._id, type: 'bonus', amount: 1000,
-      balanceBefore: 0, balanceAfter: 1000,
-      description: 'Welcome bonus — 1000 free coins!'
+      userId: user._id, type: 'bonus', amount: 0,
+      balanceBefore: 0, balanceAfter: 0,
+      description: 'Account created successfully'
     })
 
     const token = signToken(user._id)
