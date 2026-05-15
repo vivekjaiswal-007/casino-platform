@@ -305,7 +305,25 @@ export default function Home() {
       {/* LuckySport Live Cricket Embed */}
       {user && <LuckySportEmbed />}
 
-      {/* 6 Featured Games — 3 per row 16:9 */}
+      
+      {/* Quick Action Buttons */}
+      {user && (
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+          <a href='/dashboard?tab=deposit' style={{ flex:1, textDecoration:'none' }}>
+            <div style={{ background:'linear-gradient(135deg,#00d084,#00a060)', borderRadius:'12px', padding:'14px', textAlign:'center' }}>
+              <div style={{ fontSize:'22px', marginBottom:'4px' }}>💰</div>
+              <div style={{ color:'white', fontWeight:'800', fontSize:'14px' }}>Deposit</div>
+            </div>
+          </a>
+          <a href='/dashboard?tab=withdraw' style={{ flex:1, textDecoration:'none' }}>
+            <div style={{ background:'linear-gradient(135deg,#4488ff,#2255cc)', borderRadius:'12px', padding:'14px', textAlign:'center' }}>
+              <div style={{ fontSize:'22px', marginBottom:'4px' }}>🏦</div>
+              <div style={{ color:'white', fontWeight:'800', fontSize:'14px' }}>Withdraw</div>
+            </div>
+          </a>
+        </div>
+      )}
+{/* 6 Featured Games — 3 per row 16:9 */}
       <section style={{ marginBottom: '24px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '10px' }}>
           {FEATURED.map((g, i) => <FeaturedCard key={i} game={g} />)}

@@ -27,6 +27,14 @@ const WEEK = [
 
 const tipStyle = { background:'#1e1e2a', border:'1px solid #c9a227', borderRadius:'8px', color:'white', fontSize:'12px' }
 
+
+  // Maintenance Mode Toggle
+  const [maintenance, setMaintenance] = React.useState(false);
+  async function toggleMaintenance() {
+    try {
+    } catch(e) { console.error(e); }
+  }
+
 export default function Dashboard() {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
