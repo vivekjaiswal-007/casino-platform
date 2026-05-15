@@ -30,7 +30,7 @@ export default function Signup() {
 
     const res = await signup(username.trim(), emailOrPhone.trim(), password)
     if (res.success) {
-      toast.success('🎉 Account created! 1000 free coins added!')
+      toast.success('🎉 Account created successfully!')
       navigate('/')
     } else {
       toast.error(res.error)
@@ -50,7 +50,7 @@ export default function Signup() {
           <div style={{ width: '52px', height: '52px', background: 'linear-gradient(135deg,#c9a227,#f0c84a)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '26px', margin: '0 auto 10px', boxShadow: '0 6px 20px rgba(201,162,39,0.3)', color: '#0a0a0f', fontWeight: '900' }}>♠</div>
           <h1 style={{ fontFamily: 'Cinzel,serif', fontSize: '22px', fontWeight: '700' }} className="gold-text">Create Account</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '13px', marginTop: '5px' }}>
-            Get <span style={{ color: 'var(--gold)', fontWeight: '700' }}>1,000 free coins</span> instantly!
+            Join Now & Start Playing!
           </p>
         </div>
 
