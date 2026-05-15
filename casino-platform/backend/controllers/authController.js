@@ -38,7 +38,7 @@ export const signup = async (req, res) => {
       return res.status(409).json({ message: `${isPhone ? 'Phone number' : 'Email'} already registered.` })
     }
 
-    const userData = { username, password, isVerified: true, balance: 1000 }
+    const userData = { username, password, isVerified: true, balance: 0 }
     if (isPhone) userData.phone = emailOrPhone
     else userData.email = emailOrPhone.toLowerCase()
 
