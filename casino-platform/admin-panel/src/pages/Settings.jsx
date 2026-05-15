@@ -26,7 +26,8 @@ export default function Settings() {
 
   // QR Codes list
   const [qrCodes, setQrCodes] = useState([])
-  const [newQR, setNewQR] = useState({ upiId:'', name:'', description:'' })
+  const [newQR, setNewQR] = useState({ upiId:'', name:'', description:'', qrImage:'' })
+  const [uploadingImg, setUploadingImg] = useState(false)
   const [addingQR, setAddingQR] = useState(false)
 
   // Site settings
@@ -59,6 +60,13 @@ export default function Settings() {
       toast.success('✅ QR codes saved!')
     } catch { toast.error('Failed to save') }
     setSaving(false)
+  }
+
+  const uploadQRImage = async (file) => {
+    setUploadingImg(true)
+    const reader = new FileReader()
+    reader.onload = (e) => { setNewQR(p => ({...p, qrImage: e.target.result})); setUploadingImg(false) }
+    reader.readAsDataURL(file)
   }
 
   const addQR = async () => {
@@ -164,7 +172,7 @@ export default function Settings() {
               </div>
 
               {/* Preview */}
-              {newQR.upiId && <QRPreview upiId={newQR.upiId} name={newQR.name} amount={previewAmount} />}
+              {/* QR Image Upload */}<div style={{marginBottom:'12px'}}><label style={{display:'block',color:'#888',fontSize:'12px',marginBottom:'6px'}}>Upload QR Image (optional)</label><input type='file' accept='image/*' onChange={e=>e.target.files[0]&&uploadQRImage(e.target.files[0])} style={{color:'#aaa',fontSize:'12px'}} />{uploadingImg && <div style={{color:'#c9a227',fontSize:'11px',marginTop:'4px'}}>Uploading...</div>}{newQR.qrImage && <img src={newQR.qrImage} style={{width:'120px',height:'120px',objectFit:'contain',marginTop:'8px',borderRadius:'8px'}} alt='QR Preview' />}</div>{newQR.upiId && !newQR.qrImage && <QRPreview upiId={newQR.upiId} name={newQR.name} amount={previewAmount} />}
 
               <div style={{ display:'flex', gap:'8px', alignItems:'center' }}>
                 <span style={{ color:'#666', fontSize:'12px', flexShrink:0 }}>Preview ₹</span>
