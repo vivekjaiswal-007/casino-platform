@@ -26,7 +26,7 @@ export default function Settings() {
 
   // QR Codes list
   const [qrCodes, setQrCodes] = useState([])
-  const [newQR, setNewQR] = useState({ upiId:'', name:'', description:'' })
+  const [newQR, setNewQR] = useState({ upiId:'', name:'', description:'', qrImage:'' })
   const [addingQR, setAddingQR] = useState(false)
 
   // Site settings
@@ -164,7 +164,20 @@ export default function Settings() {
               </div>
 
               {/* Preview */}
-              {newQR.upiId && <QRPreview upiId={newQR.upiId} name={newQR.name} amount={previewAmount} />}
+              <div style={{marginBottom:'12px'}}>
+                <label style={{display:'block',...labelStyle}}>Upload QR Image (optional)</label>
+                <input type='file' accept='image/*' style={{color:'#aaa',fontSize:'12px',marginBottom:'8px'}}
+                  onChange={e=>{
+                    const file=e.target.files[0];
+                    if(!file)return;
+                    const reader=new FileReader();
+                    reader.onloadend=()=>setNewQR(prev=>({...prev,qrImage:reader.result}));
+                    reader.readAsDataURL(file);
+                  }}
+                />
+                {newQR.qrImage&&<img src={newQR.qrImage} style={{width:'120px',height:'120px',objectFit:'contain',borderRadius:'8px',border:'1px solid #2a2a3a'}} alt='QR Preview' />}
+              </div>
+              {newQR.upiId&&!newQR.qrImage&&<QRPreview upiId={newQR.upiId} name={newQR.name} amount={previewAmount} />}
 
               <div style={{ display:'flex', gap:'8px', alignItems:'center' }}>
                 <span style={{ color:'#666', fontSize:'12px', flexShrink:0 }}>Preview ₹</span>
