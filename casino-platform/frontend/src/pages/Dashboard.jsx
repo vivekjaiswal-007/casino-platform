@@ -411,40 +411,26 @@ export default function Dashboard() {
 
                       <div style={{ background: 'rgba(0,208,132,0.07)', border: '1px solid rgba(0,208,132,0.18)', borderRadius: '7px', padding: '9px', fontSize: '13px', fontWeight: '700', color: '#00d084', marginBottom: '8px' }}>₹{qr.amount} → 🪙 {qr.coins} coins</div>
                       <div style={{ marginTop: '14px' }}>
-                        {/* UTR input */}
-                        <div style={{ marginBottom: '10px' }}>
-                          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: '600' }}>UTR / Transaction ID *</div>
-                          <input
-                            type="text"
-                            placeholder="Enter 12-digit UTR or Transaction ID"
-                            value={utrId}
-                            onChange={e => setUtrId(e.target.value)}
-                            style={{ width: '100%', padding: '10px 12px', background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: '8px', color: 'white', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
-                          />
+                        {/* 3 Step Instructions */}
+                        <div style={{ marginTop: '12px' }}>
+                          {[
+                            { step: '1', icon: '📸', title: 'Pay & Take Screenshot', desc: 'Scan QR code, complete payment and take a screenshot of the success screen.' },
+                            { step: '2', icon: '💬', title: 'Click WhatsApp Button', desc: 'Click the WhatsApp button below to open our support chat.' },
+                            { step: '3', icon: '⏱️', title: 'Send Screenshot & Wait', desc: 'Send your payment screenshot to us and wait 2 minutes for coins to be credited.' },
+                          ].map(s => (
+                            <div key={s.step} style={{ display: 'flex', gap: '12px', marginBottom: '12px', background: 'var(--bg-hover)', borderRadius: '10px', padding: '12px' }}>
+                              <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(201,162,39,0.2)', border: '1px solid rgba(201,162,39,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '12px', fontWeight: '800', color: '#c9a227' }}>{s.step}</div>
+                              <div>
+                                <div style={{ fontSize: '13px', fontWeight: '700', color: 'white', marginBottom: '2px' }}>{s.icon} {s.title}</div>
+                                <div style={{ fontSize: '11px', color: '#666', lineHeight: 1.5 }}>{s.desc}</div>
+                              </div>
+                            </div>
+                          ))}
+                          <a href="https://wa.me/919326196388?text=Hi%20I%20made%20a%20deposit%20and%20want%20to%20share%20my%20payment%20screenshot" target="_blank"
+                            style={{ display: 'block', width: '100%', padding: '13px', background: 'linear-gradient(135deg,#25D366,#128C7E)', border: 'none', borderRadius: '10px', color: 'white', fontWeight: '800', fontSize: '14px', textAlign: 'center', textDecoration: 'none', marginTop: '4px' }}>
+                            💬 Send Screenshot on WhatsApp
+                          </a>
                         </div>
-                        {/* Screenshot upload */}
-                        <div style={{ marginBottom: '12px' }}>
-                          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: '600' }}>Payment Screenshot *</div>
-                          <label style={{ display: 'block', padding: '12px', background: 'var(--bg-hover)', border: '2px dashed var(--border)', borderRadius: '8px', cursor: 'pointer', textAlign: 'center' }}>
-                            <input type="file" accept="image/*" style={{ display: 'none' }}
-                              onChange={e => {
-                                const f = e.target.files[0]
-                                if (f) { setScreenshot(f); setScreenshotName(f.name) }
-                              }}
-                            />
-                            {screenshotName ? (
-                              <div style={{ color: '#00d084', fontSize: '12px' }}>✅ {screenshotName}</div>
-                            ) : (
-                              <div style={{ color: '#555', fontSize: '12px' }}>📷 Click to upload screenshot</div>
-                            )}
-                          </label>
-                        </div>
-                        {/* Submit button */}
-                        <button onClick={submitDeposit} disabled={submitLoading}
-                          style={{ width: '100%', padding: '12px', background: 'linear-gradient(135deg,#b88a1a,#e8c840)', border: 'none', borderRadius: '8px', color: '#050200', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>
-                          {submitLoading ? '⏳ Submitting...' : '✅ Submit Deposit Request'}
-                        </button>
-                        <div style={{ color: 'var(--text-muted)', fontSize: '11px', lineHeight: 1.5, marginTop: '8px', textAlign: 'center' }}>Coins credited within 30 minutes after verification.</div>
                       </div>
                     </div>
                 )})()}
