@@ -217,6 +217,10 @@ export default function Settings() {
                       </span>
                     </div>
                     <div style={{ fontSize:'12px', color:'#c9a227', marginBottom:'2px', wordBreak:'break-all' }}>{qr.upiId}</div>
+                    <div style={{display:'flex',gap:'8px',marginTop:'6px',flexWrap:'wrap'}}>
+                      <button onClick={()=>{navigator.clipboard.writeText(qr.upiId);toast.success('UPI ID copied!')}} style={{padding:'4px 10px',background:'rgba(201,162,39,0.15)',border:'1px solid rgba(201,162,39,0.3)',borderRadius:'6px',color:'#c9a227',fontSize:'11px',cursor:'pointer',fontWeight:'700'}}>📋 Copy UPI</button>
+                      <a href={'upi://pay?pa='+qr.upiId+'&pn='+(qr.name||'Payment')+'&am=&cu=INR'} target='_blank' style={{padding:'4px 10px',background:'rgba(0,208,132,0.15)',border:'1px solid rgba(0,208,132,0.3)',borderRadius:'6px',color:'#00d084',fontSize:'11px',fontWeight:'700',textDecoration:'none'}}>💳 Pay Now</a>
+                    </div>
                     {qr.description && <div style={{ fontSize:'11px', color:'#555' }}>{qr.description}</div>}
                     {/* Mini QR preview */}
                     <div style={{ marginTop:'10px' }}>
