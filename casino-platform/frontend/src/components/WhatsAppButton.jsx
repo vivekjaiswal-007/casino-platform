@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 // WhatsApp number — admin can change this
 // Format: country code + number (no + or spaces)
-const WA_NUMBER = '584169924805'  // India: 91 + 10-digit number
+const WA_NUMBER = '584167724805'  // India: 91 + 10-digit number
 const WA_MESSAGE = 'Hello New Mahadev Gaming Support! I need help.'
 
 export default function WhatsAppButton() {
