@@ -82,7 +82,12 @@ export default function Dashboard() {
   const gameStatsArr = Object.values(gameStats).sort((a, b) => b.bets - a.bets)
 
   // ── QR ──
+  const [showWarning, setShowWarning] = useState(false)
+  const [qrReady, setQrReady] = useState(false)
+
   const generateQRCodes = async () => {
+    setShowWarning(true)
+    return
     if (depositAmount < 100) return toast.error('Minimum deposit is ₹100')
     setQrLoading(true); setSelectedQR(null); setQrCodes([])
     try {
